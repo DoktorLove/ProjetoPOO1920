@@ -49,7 +49,7 @@ public class Empresa extends Transportador
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
-        .append("Custo_Km : ").append(this.custo_km);
+        .append("Custo_Km : ").append(this.custo_km + "\n");
         return sb.toString();
     }
     

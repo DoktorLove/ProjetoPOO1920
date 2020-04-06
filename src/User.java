@@ -29,11 +29,11 @@ public abstract class User
     }
     
     //Construtor copia
-    public User(User newuser)
+    public User(User newUser)
     {
-        this.username = newuser.getUsername();
-        this.password = newuser.getPassword();
-        this.posicao = newuser.getPosicao();
+        this.username = newUser.getUsername();
+        this.password = newUser.getPassword();
+        this.posicao = newUser.getPosicao();
     }
     
     //Gets
@@ -84,8 +84,8 @@ public abstract class User
     {
         StringBuilder sb = new StringBuilder();
         sb.append("\nUsername: ").append(this.username)
-          .append("\nPassword: ").append(this.password)
-          .append(this.posicao.toString()+"\n");
+          .append("\nPassword: ").append(this.password + "\n")
+          .append(this.posicao.toString());
         return sb.toString();
     }
     

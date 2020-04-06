@@ -67,7 +67,7 @@ public class Loja extends User
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
-        .append("Fila Espera : ").append(this.fila_espera);
+        .append("Fila Espera : ").append(this.fila_espera + "\n");
         return sb.toString();
     }
     

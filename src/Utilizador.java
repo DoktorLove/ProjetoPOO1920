@@ -68,8 +68,8 @@ public class Utilizador extends User
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
-        .append("Idade : ").append(this.idade)
-        .append("Sexo : ").append(this.sexo);
+        .append("Idade : ").append(this.idade + "\n")
+        .append("Sexo : ").append(this.sexo + "\n");
         return sb.toString();
     }
     

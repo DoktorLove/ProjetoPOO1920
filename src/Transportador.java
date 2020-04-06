@@ -94,6 +94,15 @@ public abstract class Transportador extends User
     {
         return this.classificacao.get(name);
     }
-    
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append(super.toString())
+        .append("\nTransporte disponivel: ").append(this.transporte)
+        .append("\nTransporte médico: ").append(this.transporte_medico + "\n")
+        .append(this.classificacao.toString()+"\n");
+        return sb.toString();
+    }
+
     public abstract Transportador clone();
 }

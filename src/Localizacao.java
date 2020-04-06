@@ -59,7 +59,7 @@ public class Localizacao
         if(this==loc) return true;
         if(loc==null || loc.getClass() != this.getClass()) return false;
         Localizacao u = (Localizacao) loc;
-        return this.latitude == u.getLatitude() & this.longitude == u.getLatitude();
+        return this.latitude == u.getLatitude() && this.longitude == u.getLatitude();
     }
     
     //toString
@@ -67,8 +67,8 @@ public class Localizacao
     {
         StringBuilder sb = new StringBuilder();
         sb.append("Localizacao: \n")
-        .append("Latitude: ").append(this.latitude + "\n")
-        .append("Longitude: ").append(this.longitude);
+        .append("\tLatitude: ").append(this.latitude + "\n")
+        .append("\tLongitude: ").append(this.longitude);
         return sb.toString();
     }
     

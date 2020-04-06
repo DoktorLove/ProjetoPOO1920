@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.target=Loja
+comment0.text=\r\n\ Classe\ que\ trata\ das\ Loja\ que\ produzem\ as\ encomendas\r\n\ \r\n\ @author\ Rui\ Cunha\r\n\ @version\ 06/04/2020\r\n
+comment1.params=
+comment1.target=Loja()
+comment2.params=username\ password\ local\ fila_espera
+comment2.target=Loja(java.lang.String,\ java.lang.String,\ Localizacao,\ java.util.List)
+comment3.params=novaloja
+comment3.target=Loja(Loja)
+comment4.params=
+comment4.target=java.util.List\ getFilaEspera()
+comment5.params=fila
+comment5.target=void\ setFilaEspera(java.util.List)
+comment6.params=
+comment6.target=Loja\ clone()
+comment7.params=
+comment7.target=java.lang.String\ toString()
+comment8.params=o
+comment8.target=boolean\ equals(java.lang.Object)
+numComments=9

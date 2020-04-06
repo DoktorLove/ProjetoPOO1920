@@ -1,0 +1,24 @@
+#BlueJ class context
+comment0.target=Voluntario
+comment0.text=\r\n\ Classe\ que\ trata\ dos\ voluntarios\ que\ entregam\ as\ encomendas\r\n\ \r\n\ @author\ Rui\ Cunha\r\n\ @version\ 06/04/2020\r\n
+comment1.params=
+comment1.target=Voluntario()
+comment10.params=o
+comment10.target=boolean\ equals(java.lang.Object)
+comment2.params=username\ password\ posicao\ transport\ transporte_medico\ classificacao\ idade\ sexo
+comment2.target=Voluntario(java.lang.String,\ java.lang.String,\ Localizacao,\ boolean,\ boolean,\ java.util.Map,\ int,\ java.lang.String)
+comment3.params=vol
+comment3.target=Voluntario(Voluntario)
+comment4.params=
+comment4.target=int\ getIdade()
+comment5.params=
+comment5.target=java.lang.String\ getSexo()
+comment6.params=
+comment6.target=Voluntario\ clone()
+comment7.params=idade
+comment7.target=void\ setIdade(int)
+comment8.params=sexo
+comment8.target=void\ setSexo(java.lang.String)
+comment9.params=
+comment9.target=java.lang.String\ toString()
+numComments=11

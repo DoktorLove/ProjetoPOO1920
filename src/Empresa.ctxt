@@ -1,0 +1,20 @@
+#BlueJ class context
+comment0.target=Empresa
+comment0.text=\r\n\ Classe\ que\ tratas\ das\ empresas\ de\ transporte\r\n\ \r\n\ @author\ Rui\ Cunha\r\n\ @version\ 06/04/2020\r\n
+comment1.params=
+comment1.target=Empresa()
+comment2.params=username\ password\ posicao\ transport\ transporte_medico\ classificacao\ custo_km
+comment2.target=Empresa(java.lang.String,\ java.lang.String,\ Localizacao,\ boolean,\ boolean,\ java.util.Map,\ double)
+comment3.params=emp
+comment3.target=Empresa(Empresa)
+comment4.params=
+comment4.target=double\ getCusto_Km()
+comment5.params=custo
+comment5.target=void\ setCusto_Km(double)
+comment6.params=
+comment6.target=java.lang.String\ toString()
+comment7.params=o
+comment7.target=boolean\ equals(java.lang.Object)
+comment8.params=
+comment8.target=Empresa\ clone()
+numComments=9

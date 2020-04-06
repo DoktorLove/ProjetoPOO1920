@@ -1,0 +1,24 @@
+#BlueJ class context
+comment0.target=Localizacao
+comment0.text=\r\n\ Classe\ que\ trata\ das\ localizacoes\r\n\ \r\n\ @author\ Rui\ Cunha\r\n\ @version\ 06/04/2020\r\n
+comment1.params=
+comment1.target=Localizacao()
+comment10.params=
+comment10.target=Localizacao\ clone()
+comment2.params=lat\ lon
+comment2.target=Localizacao(double,\ double)
+comment3.params=local
+comment3.target=Localizacao(Localizacao)
+comment4.params=
+comment4.target=double\ getLatitude()
+comment5.params=
+comment5.target=double\ getLongitude()
+comment6.params=lat
+comment6.target=void\ setLatitude(double)
+comment7.params=lon
+comment7.target=void\ setLongitude(double)
+comment8.params=loc
+comment8.target=boolean\ equals(Localizacao)
+comment9.params=
+comment9.target=java.lang.String\ toString()
+numComments=11

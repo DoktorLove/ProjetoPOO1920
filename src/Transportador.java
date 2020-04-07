@@ -104,5 +104,14 @@ public abstract class Transportador extends User
         return sb.toString();
     }
 
+    public boolean equals(Object o){
+        if(this == o) return true;
+        if(o == null || this.getClass() != o.getClass()) return false;
+        Voluntario v = (Voluntario) o;
+        return this.getTransporte() == v.getTransporte() &&
+                this.getTransporteMedico() == v.getTransporteMedico() &&
+                this.getClassificacoes().equals(v.getClassificacoes());
+    }
+
     public abstract Transportador clone();
 }

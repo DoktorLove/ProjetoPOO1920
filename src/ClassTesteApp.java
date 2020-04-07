@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ClassTesteApp {
 
@@ -21,5 +22,22 @@ public class ClassTesteApp {
         System.out.println(bolama.toString());
         pedro.removeClassificacao("Joel");
         System.out.println(pedro.toString() + "A Classificação é: " + pedro.getClassificacao("Manuel"));
+        Encomenda e = new Encomenda("Fernando","Lidl",2.2,new ArrayList<String>(),false);
+        Encomenda i = new Encomenda("Fernando","Lidl",2.2,new ArrayList<String>(),false);
+        System.out.println(e.toString());
+        System.out.println(e.equals(i));
+        List<String> l = new ArrayList<>();
+        l.add("Queijo");
+        l.add("Pão");
+        i.setProdutos(l);
+        System.out.println(i.toString());
+        System.out.println(e.equals(i));
+        l.remove(0);
+        l.remove(0);
+        System.out.println(l.toString());
+        System.out.println(i.toString());
+        System.out.println(e.equals(i));
+        i.setProdutos(l);
+        System.out.println(e.equals(i));
     }
 }

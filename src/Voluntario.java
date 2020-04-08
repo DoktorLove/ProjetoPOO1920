@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 /**
@@ -21,9 +22,9 @@ public class Voluntario extends Transportador
     
     //Construtor por parametros
     public Voluntario(String username, String password, Localizacao posicao,
-    boolean transport, boolean transporte_medico, Map<String,Integer> classificacao, int idade, String sexo)
+                      boolean transport, boolean transporte_medico, Map<String,Integer> classificacao, HashMap<String, List<Encomenda>> encomendas, int idade, String sexo)
     {
-        super(username,password,posicao,transport,transporte_medico,classificacao);
+        super(username,password,posicao,transport,transporte_medico,classificacao,encomendas);
         this.idade = idade;
         this.sexo = sexo;
     }

@@ -1,0 +1,311 @@
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.Stage;
+
+import javax.print.DocFlavor;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Para criar Butão no menu: {"Button","texto","largura","altura","posiçao linha","posiçao coluna"}
+ * Para criar Label no menu: {"Label","texto","posiçao linha","posiçao coluna"}
+ * Para criar Caixa de texto: {"TextField","texto","posiçao linha","posiçao coluna"}
+ * PAra criar Check box: {"CheckBox","texto","posiçao linha","posiçao coluna"}
+ */
+
+public class TrazAquiApp extends Application{
+
+    Stage window;
+    public static void main(String args[]){
+        launch(args);
+    }
+
+
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        window = stage;
+        window.setTitle("TrazAquiApp");
+
+        String[][] opcoesInit  = {
+                {"Button","Log In","150","100","10","0"},
+                {"Button","Sign In","150","100","10","1"}
+        };
+        String[][] opcoesLogIn  = {
+                {"Label","Username","0","0"},
+                {"TextField","Username","1","0"},
+                {"Label","Password","0","2"},
+                {"TextField","Password","1","2"},
+                {"Button","Log In","150","100","1","3"}
+        };
+        String[][] opcoesDifUsers  = {
+                {"Button","User Singular","150","100","8","0"},
+                {"Button","User Comercio","150","100","8","1"},
+                {"Button","User Empresa","150","100","8","2"}
+        };
+        String[][] opcoesSignIn  = {
+                {"Label","Username","0","0"},
+                {"TextField","Username","1","0"},
+                {"Label","Email","0","1"},
+                {"TextField","Email","1","1"},
+                {"Label","Password","0","2"},
+                {"TextField","Password","1","2"},
+                {"Label","Idade","0","3"},
+                {"TextField","Idade","1","3"},
+                {"CheckBox","Masculino","0","4"},
+                {"CheckBox","Feminino","1","4"},
+                {"Button","Sign In","150","100","1","5"}
+        };
+
+        Scene menuInit = new Menu(opcoesInit).executeFormat();
+        Scene menuLogIn = new Menu(opcoesLogIn).executeFormat();
+        Scene menuSignIn = new Menu(opcoesSignIn).executeFormat();
+        Scene menuDifUsers = new Menu(opcoesDifUsers).executeFormat();
+        //window.setScene(menuLogIn);
+        window.setScene(menuDifUsers);
+        //window.setScene(menuInit);
+        //window.setScene(menuSignIn);
+
+        window.show();
+    }
+
+
+    /**
+     * escrever e manipular input de choice box's
+     * @Override
+     *     public void start(Stage primaryStage) throws Exception {
+     *         window = primaryStage;
+     *         window.setTitle("TrazAquiApp");
+     *
+     *         button = new Button("Click me");
+     *
+     *         ChoiceBox<String> choice = new ChoiceBox<>();
+     *
+     *         choice.getItems().add("Apple");
+     *         choice.getItems().add("Banana");
+     *         choice.getItems().add("Bacon");
+     *
+     *         choice.setValue("Bacon");
+     *
+     *         VBox layout = new VBox(10);
+     *         layout.setPadding(new Insets(20,20,20,20));
+     *         layout.getChildren().addAll(choice,button);
+     *
+     *         button.setOnAction(e->getChoice(choice));
+     *
+     *         scene = new Scene(layout,300,250);
+     *         window.setScene(scene);
+     *         window.show();
+     *
+     *     }
+     *
+     *     private void getChoice(ChoiceBox<String> choice){
+     *         String food = choice.getValue();
+     *         System.out.println(food);
+     *     }
+     */
+
+    /**
+     * como criar checkbox's
+     * @Override
+     *     public void start(Stage primaryStage) throws Exception {
+     *         window = primaryStage;
+     *         window.setTitle("TrazAquiApp");
+     *
+     *         CheckBox box1 = new CheckBox("Bacon");
+     *         CheckBox box2 = new CheckBox("Tuna");
+     *         box1.setSelected(true);
+     *
+     *         button = new Button("Click me");
+     *         button.setOnAction(e-> handleOptions(box1,box2));
+     *
+     *
+     *         VBox layout = new VBox(10);
+     *         layout.setPadding(new Insets(20,20,20,20));
+     *         layout.getChildren().addAll(box1,box2,button);
+     *
+     *         scene = new Scene(layout,300,250);
+     *         window.setScene(scene);
+     *         window.show();
+     *
+     *     }
+     *
+     *     private void handleOptions(CheckBox box1, CheckBox box2){
+     *         String s = "Users order:\n";
+     *
+     *         if(box1.isSelected()){
+     *             s += "->Bacon\n";
+     *         }
+     *
+     *         if(box2.isSelected()){
+     *             s += "->Tuna\n";
+     *         }
+     *
+     *         System.out.println(s);
+     *     }
+     */
+
+
+    /**
+     *  como interagir com o input do utilizador
+     *  @Override
+     *     public void start(Stage primaryStage) throws Exception {
+     *         window = primaryStage;
+     *         window.setTitle("TrazAquiApp");
+     *
+     *         TextField nameInput = new TextField();
+     *         nameInput.setPromptText("name");
+     *
+     *         button = new Button("Click me");
+     *         button.setOnAction(e-> isInt(nameInput, nameInput.getText()));
+     *
+     *
+     *         VBox layout = new VBox(10);
+     *         layout.setPadding(new Insets(20,20,20,20));
+     *         layout.getChildren().addAll(nameInput,button);
+     *
+     *         scene = new Scene(layout,300,250);
+     *         window.setScene(scene);
+     *         window.show();
+     *
+     *     }
+     *
+     *     private boolean isInt(TextField input, String s){
+     *         try{
+     *             int age = Integer.parseInt(input.getText());
+     *             System.out.println("User is: "+ age + " years old");
+     *             return true;
+     *         }catch(NumberFormatException e){
+     *             System.out.println("Error: " + s + " is not a number");
+     *             return false;
+     *         }
+     *     }
+     */
+
+    /**
+     *como criar janelas de texto
+     *  public void start(Stage primaryStage) throws Exception {
+     *        window = primaryStage;
+     *        window.setTitle("TrazAquiApp");
+     *
+     *         GridPane grid = new GridPane();
+     *         grid.setPadding(new Insets(10,10,10,10));
+     *         grid.setVgap(8);
+     *         grid.setHgap(10);
+     *
+     *         Label nameLabel1 = new Label("Username:");
+     *         GridPane.setConstraints(nameLabel1, 0, 0);
+     *
+     *         TextField nameInput = new TextField("Bitch");
+     *         GridPane.setConstraints(nameInput, 1, 0);
+     *
+     *         Label passLabel1 = new Label("Password:");
+     *         GridPane.setConstraints(passLabel1, 0, 1);
+     *
+     *         TextField passInput = new TextField();
+     *         passInput.setPromptText("password");
+     *         GridPane.setConstraints(passInput,1,1);
+     *
+     *         Button button = new Button("Log in");
+     *         GridPane.setConstraints(button,1,2);
+     *
+     *         grid.getChildren().addAll(nameLabel1, nameInput, passLabel1, passInput, button);
+     *
+     *         Scene scene = new Scene(grid,300,200);
+     *         window.setScene(scene);
+     *         window.show();
+     *
+     *     }
+     */
+
+    /**
+     * @Override
+     *     public void start(Stage primaryStage) throws Exception {
+     *         window = primaryStage;
+     *         window.setTitle("TrazAquiApp");
+     *
+     *         HBox topMenu = new HBox();
+     *         Button buttonA = new Button("File:");
+     *         Button buttonB = new Button("Edit:");
+     *         Button buttonC = new Button("View:");
+     *         topMenu.getChildren().addAll(buttonA,buttonB,buttonC);
+     *
+     *         VBox leftMenu = new VBox();
+     *         Button buttonD = new Button("D");
+     *         Button buttonE = new Button("E");
+     *         Button buttonF = new Button("F");
+     *         leftMenu.getChildren().addAll(buttonE,buttonF,buttonD);
+     *
+     *         BorderPane borderPane = new BorderPane();
+     *         borderPane.setTop(topMenu);
+     *         borderPane.setLeft(leftMenu);
+     *
+     *         Scene scene = new Scene(borderPane,300,250);
+     *         window.setScene(scene);
+     *         window.show();
+     */
+
+    /**
+     * @Override
+     *     public void start(Stage primaryStage) throws Exception {
+     *         window = primaryStage;
+     *
+     *         Label label1 = new Label("Welcome");
+     *         Button button1 = new Button("Forward");
+     *         button1.setOnAction(e-> window.setScene(scene2));
+     *
+     *         VBox layout1 = new VBox(20);
+     *         layout1.getChildren().addAll(label1, button1);
+     *         scene1 = new Scene(layout1,200,200);
+     *
+     *         Label label2 = new Label("Hi");
+     *         Button button2 = new Button("Backward");
+     *         button2.setOnAction(e -> window.setScene(scene1));
+     *
+     *         StackPane layout2 = new StackPane();
+     *         layout2.getChildren().addAll(label2,button2);
+     *         scene2 = new Scene(layout2,600,300);
+     *
+     *         window.setScene(scene1);
+     *         window.setTitle("TrazAquiApp");
+     *         window.show();
+     *
+     *
+     *     }
+     */
+
+    /**
+     * @Override
+     *     public void start(Stage stage) throws Exception {
+     *         stage.setTitle("TrazAquiApp");
+     *
+     *         button1 = new Button();
+     *
+     *         button1.setText("Log in");
+     *
+     *         button1.setOnAction(e->System.out.println("ola"));
+     *
+     *         StackPane layout = new StackPane();
+     *         layout.getChildren().add(button1);
+     *
+     *
+     *         Scene scene = new Scene(layout, 300, 250);
+     *         stage.setScene(scene);
+     *         stage.show();
+     *     }
+     *
+     * @Override
+     *     public void handle(ActionEvent actionEvent) {
+     *         if(actionEvent.getSource()==button1){
+     *             System.out.println("Parabéns");
+     *         }
+     *     }
+     */
+}

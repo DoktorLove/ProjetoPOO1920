@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 
 import javax.print.DocFlavor;
 import java.io.FileNotFoundException;
@@ -14,68 +15,240 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Para criar Butão no menu: {"Button","texto","largura","altura","posiçao linha","posiçao coluna"}
+ * Para criar Botão no menu: {"Button","texto","largura","altura","posiçao linha","posiçao coluna"}
  * Para criar Label no menu: {"Label","texto","posiçao linha","posiçao coluna"}
  * Para criar Caixa de texto: {"TextField","texto","posiçao linha","posiçao coluna"}
- * PAra criar Check box: {"CheckBox","texto","posiçao linha","posiçao coluna"}
+ * Para criar Check box: {"CheckBox","texto","posiçao linha","posiçao coluna"}
+ * Para criar Botão de return:{"ButtomRet",(mesmos campos que Botão),"diretoria da imagem"}
+ * O Botão return, deve ser sempre o ultimo a ser colucado na matriz
  */
 
 public class TrazAquiApp extends Application{
 
-    Stage window;
+    String[][] opcoesInit  = {
+            {"Button","Log In","150","100","7","0"},
+            {"Button","Sign In","150","100","7","1"},
+            {"ButtonRet","","0","32"}
+    };
+    String[][] opcoesLogIn  = {
+            {"Label","Username","0","0"},
+            {"TextField","Username","1","0"},
+            {"Label","Password","0","2"},
+            {"TextField","Password","1","2"},
+            {"Button","Log In","150","100","1","3"},
+            {"ButtonRet","","0","29"}
+    };
+    String[][] opcoesDifUsers  = {
+            {"Button","User Singular","150","100","5","0"},
+            {"Button","User Comercio","150","100","5","1"},
+            {"Button","User Empresa","150","100","5","2"},
+            {"ButtonRet","","0","29"}
+    };
+    String[][] opcoesSignIn  = {
+            {"Label","Username","0","0"},
+            {"TextField","Username","1","0"},
+            {"Label","Email","0","1"},
+            {"TextField","Email","1","1"},
+            {"Label","Password","0","2"},
+            {"TextField","Password","1","2"},
+            {"Label","Idade","0","3"},
+            {"TextField","Idade","1","3"},
+            {"CheckBox","Masculino","0","4"},
+            {"CheckBox","Feminino","1","4"},
+            {"Button","Sign In","150","100","1","5"},
+            {"ButtonRet","","0","20"}
+    };
+
+    String[][] opcoesSignInEmpresa  = {
+            {"Label","Username","0","0"},
+            {"TextField","Username","1","0"},
+            {"Label","Email","0","1"},
+            {"TextField","Email","1","1"},
+            {"Label","Password","0","2"},
+            {"TextField","Password","1","2"},
+            {"Label","Taxa por km","0","3"},
+            {"TextField","km","1","3"},
+            {"Label","Taxa por kg","0","4"},
+            {"TextField","kg","1","4"},
+            {"Button","Sign In","150","100","1","5"},
+            {"ButtonRet","","0","20"}
+    };
+
+    String[][] opcoesSignInLoja  = {
+            {"Label","Username","0","0"},
+            {"TextField","Username","1","0"},
+            {"Label","Email","0","1"},
+            {"TextField","Email","1","1"},
+            {"Label","Password","0","2"},
+            {"TextField","Password","1","2"},
+            {"CheckBox","Fila de espera?","0","3"},
+            {"Label","De que tamanho?","0","4"},
+            {"TextField","tamanho","1","4"},
+            {"Button","Sign In","150","100","1","5"},
+            {"ButtonRet","","0","20"}
+    };
+
+
+    private TrazAqui logNegocio;
+
+    private final Menu menuInit = new Menu(opcoesInit);
+    private final Menu menuLogIn = new Menu(opcoesLogIn);
+    private final Menu menuSignIn = new Menu(opcoesSignIn);
+    private final Menu menuDifUsers = new Menu(opcoesDifUsers);
+    private final Menu menuSignInLoja = new Menu(opcoesSignInLoja);
+    private final Menu menuSignInEmpresa = new Menu(opcoesSignInEmpresa);
+
     public static void main(String args[]){
         launch(args);
     }
 
+    /**
+
+     try{
+        this.logNegocio = TrazAqui.carregaEstado("estado.obj");
+    }
+    catch (FileNotFoundException e) {
+        System.out.println("Parece que é a primeira utilização...");
+        this.logNegocio = new TrazAqui();
+    }
+    catch (IOException e) {
+        System.out.println("Ops! Erro de leitura!");
+        this.logNegocio = new TrazAqui();
+    }
+    catch (ClassNotFoundException e) {
+        System.out.println("Ops! Formato de ficheiro de dados errado!");
+        this.logNegocio = new TrazAqui();
+    }
+     */
 
 
     @Override
     public void start(Stage stage) throws Exception {
-        window = stage;
-        window.setTitle("TrazAquiApp");
+        stage.setTitle("TrazAquiApp");
 
-        String[][] opcoesInit  = {
-                {"Button","Log In","150","100","10","0"},
-                {"Button","Sign In","150","100","10","1"}
-        };
-        String[][] opcoesLogIn  = {
-                {"Label","Username","0","0"},
-                {"TextField","Username","1","0"},
-                {"Label","Password","0","2"},
-                {"TextField","Password","1","2"},
-                {"Button","Log In","150","100","1","3"}
-        };
-        String[][] opcoesDifUsers  = {
-                {"Button","User Singular","150","100","8","0"},
-                {"Button","User Comercio","150","100","8","1"},
-                {"Button","User Empresa","150","100","8","2"}
-        };
-        String[][] opcoesSignIn  = {
-                {"Label","Username","0","0"},
-                {"TextField","Username","1","0"},
-                {"Label","Email","0","1"},
-                {"TextField","Email","1","1"},
-                {"Label","Password","0","2"},
-                {"TextField","Password","1","2"},
-                {"Label","Idade","0","3"},
-                {"TextField","Idade","1","3"},
-                {"CheckBox","Masculino","0","4"},
-                {"CheckBox","Feminino","1","4"},
-                {"Button","Sign In","150","100","1","5"}
-        };
+        run(stage);
 
-        Scene menuInit = new Menu(opcoesInit).executeFormat();
-        Scene menuLogIn = new Menu(opcoesLogIn).executeFormat();
-        Scene menuSignIn = new Menu(opcoesSignIn).executeFormat();
-        Scene menuDifUsers = new Menu(opcoesDifUsers).executeFormat();
-        //window.setScene(menuLogIn);
-        window.setScene(menuDifUsers);
-        //window.setScene(menuInit);
-        //window.setScene(menuSignIn);
-
-        window.show();
+        stage.show();
     }
 
+    private void run(Stage stage) throws Exception {
+        Pair<Scene,List<Control>> p = this.menuInit.executeFormat();
+        Scene init = p.getKey();
+        stage.setScene(init);
+        List<Control> l = p.getValue();
+
+        l.get(0).setOnMousePressed(e->{
+            try {
+                logIn(stage,init);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        l.get(1).setOnMousePressed(e->{
+            try {
+                DifUsers(stage,init);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
+    }
+
+    public void logIn(Stage stage, Scene scene) throws Exception {
+        Pair<Scene,List<Control>> p = this.menuLogIn.executeFormat();
+        Scene logIn = p.getKey();
+        stage.setScene(logIn);
+        List<Control> l = p.getValue();
+
+        l.get(l.size()-1).setOnMousePressed(e->{
+            stage.setScene(scene);
+        });
+        
+        
+    }
+
+    public void DifUsers(Stage stage,Scene scene) throws Exception {
+        Pair<Scene,List<Control>> p = this.menuDifUsers.executeFormat();
+        Scene DifUsers = p.getKey();
+        stage.setScene(DifUsers);
+        List<Control> l = p.getValue();
+
+
+        l.get(0).setOnMousePressed(e->{
+            try {
+                signIn(stage,DifUsers);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        l.get(1).setOnMousePressed(e->{
+            try {
+                signInLoja(stage,DifUsers);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        l.get(2).setOnMousePressed(e->{
+            try {
+                signInEmpresa(stage,DifUsers);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+        l.get(l.size()-1).setOnMousePressed(e->{
+            stage.setScene(scene);
+        });
+
+    }
+
+    public void signIn(Stage stage, Scene scene) throws Exception {
+        Pair<Scene,List<Control>> p = this.menuSignIn.executeFormat();
+        Scene signIn = p.getKey();
+        stage.setScene(signIn);
+        List<Control> l = p.getValue();
+
+        l.get(l.size()-1).setOnMousePressed(e->{
+            stage.setScene(scene);
+        });
+    }
+
+    public void signInLoja(Stage stage, Scene scene) throws Exception {
+        Pair<Scene,List<Control>> p = this.menuSignInLoja.executeFormat();
+        Scene signInLoja = p.getKey();
+        stage.setScene(signInLoja);
+        List<Control> l = p.getValue();
+
+        if((l.get(7).isVisible())){
+            l.get(7).setVisible(false);
+            l.get(8).setVisible(false);
+        }
+
+        l.get(6).setOnMousePressed(e->{
+            if((!l.get(7).isVisible())){
+                l.get(7).setVisible(true);
+                l.get(8).setVisible(true);
+            }
+            else {
+                l.get(7).setVisible(false);
+                l.get(8).setVisible(false);
+            }
+        });
+
+        l.get(l.size()-1).setOnMousePressed(e->{
+            stage.setScene(scene);
+        });
+    }
+
+    public void signInEmpresa(Stage stage, Scene scene) throws Exception {
+        Pair<Scene,List<Control>> p = this.menuSignInEmpresa.executeFormat();
+        Scene signInEmpresa = p.getKey();
+        stage.setScene(signInEmpresa);
+        List<Control> l = p.getValue();
+
+        l.get(l.size()-1).setOnMousePressed(e->{
+            stage.setScene(scene);
+        });
+    }
 
     /**
      * escrever e manipular input de choice box's

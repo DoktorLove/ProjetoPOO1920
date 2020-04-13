@@ -1,0 +1,21 @@
+#BlueJ class context
+comment0.target=TrazAquiApp
+comment0.text=\r\n\ Para\ criar\ Bot\u00E3o\ no\ menu\:\ {"Button","texto","largura","altura","posi\u00E7ao\ linha","posi\u00E7ao\ coluna"}\r\n\ Para\ criar\ Label\ no\ menu\:\ {"Label","texto","posi\u00E7ao\ linha","posi\u00E7ao\ coluna"}\r\n\ Para\ criar\ Caixa\ de\ texto\:\ {"TextField","texto","posi\u00E7ao\ linha","posi\u00E7ao\ coluna"}\r\n\ Para\ criar\ Check\ box\:\ {"CheckBox","texto","posi\u00E7ao\ linha","posi\u00E7ao\ coluna"}\r\n\ Para\ criar\ Bot\u00E3o\ de\ return\:{"ButtomRet",(mesmos\ campos\ que\ Bot\u00E3o),"diretoria\ da\ imagem"}\r\n\ O\ Bot\u00E3o\ return,\ deve\ ser\ sempre\ o\ ultimo\ a\ ser\ colucado\ na\ matriz\r\n
+comment1.params=args
+comment1.target=void\ main(java.lang.String[])
+comment2.params=stage
+comment2.target=void\ start(javafx.stage.Stage)
+comment2.text=\r\n\r\n\ \ \ \ \ try{\r\n\ \ \ \ \ \ \ \ this.logNegocio\ \=\ TrazAqui.carregaEstado("estado.obj");\r\n\ \ \ \ }\r\n\ \ \ \ catch\ (FileNotFoundException\ e)\ {\r\n\ \ \ \ \ \ \ \ System.out.println("Parece\ que\ \u00E9\ a\ primeira\ utiliza\u00E7\u00E3o...");\r\n\ \ \ \ \ \ \ \ this.logNegocio\ \=\ new\ TrazAqui();\r\n\ \ \ \ }\r\n\ \ \ \ catch\ (IOException\ e)\ {\r\n\ \ \ \ \ \ \ \ System.out.println("Ops\!\ Erro\ de\ leitura\!");\r\n\ \ \ \ \ \ \ \ this.logNegocio\ \=\ new\ TrazAqui();\r\n\ \ \ \ }\r\n\ \ \ \ catch\ (ClassNotFoundException\ e)\ {\r\n\ \ \ \ \ \ \ \ System.out.println("Ops\!\ Formato\ de\ ficheiro\ de\ dados\ errado\!");\r\n\ \ \ \ \ \ \ \ this.logNegocio\ \=\ new\ TrazAqui();\r\n\ \ \ \ }\r\n
+comment3.params=stage
+comment3.target=void\ run(javafx.stage.Stage)
+comment4.params=stage\ scene
+comment4.target=void\ logIn(javafx.stage.Stage,\ javafx.scene.Scene)
+comment5.params=stage\ scene
+comment5.target=void\ DifUsers(javafx.stage.Stage,\ javafx.scene.Scene)
+comment6.params=stage\ scene
+comment6.target=void\ signIn(javafx.stage.Stage,\ javafx.scene.Scene)
+comment7.params=stage\ scene
+comment7.target=void\ signInLoja(javafx.stage.Stage,\ javafx.scene.Scene)
+comment8.params=stage\ scene
+comment8.target=void\ signInEmpresa(javafx.stage.Stage,\ javafx.scene.Scene)
+numComments=9

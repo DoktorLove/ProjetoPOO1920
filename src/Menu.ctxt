@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.target=Menu
+comment1.params=opcoes
+comment1.target=Menu(java.lang.String[][])
+comment1.text=\r\n\ Constructor\ for\ objects\ of\ class\ Menu\r\n
+comment2.params=
+comment2.target=java.util.List\ format()
+comment3.params=
+comment3.target=javafx.util.Pair\ executeFormat()
+numComments=4

@@ -2,72 +2,65 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 /**
  * Classe que trata das Loja que produzem as encomendas
  * 
  * @author Rui Cunha
  * @version 06/04/2020
  */
-public class Loja extends User
+public abstract class Loja extends User
 {
-    //Lista de encomendas ja prontas a ser entregues
-    //private Map<String,Encomenda> encomendas_prontas;
-    //Possivel Indicar pessoas na fila ???
-    //private boolean existe_fila ???
-    //Pessoas na fila de espera?
-    private List<Utilizador> fila_espera;
+    private Map<String,List<Encomenda>> encomendas;//encomendas prontas a ser entregues  
     
     //Construtor vazio
     public Loja()
     {
         super();
-        this.fila_espera = new ArrayList<>();
+        this.encomendas = new HashMap<>();
     }
     
     //Construtor por parametros
-    public Loja(String username, String password, Localizacao local, List<Utilizador> fila_espera)
+    public Loja(String username, String password, Localizacao local,HashMap<String,List<Encomenda>> encomendas)
     {
         super(username,password,local);
-        this.setFilaEspera(fila_espera);
+        setEncomendas(encomendas);
     }
     
     //Construtor copia
     public Loja(Loja novaloja)
     {
         super(novaloja);
-        this.setFilaEspera(novaloja.getFilaEspera());
+        setEncomendas(novaloja.getEncomendas());
     }
     
     //Getters
-    public List<Utilizador> getFilaEspera()
-    {
-        List<Utilizador> res = new ArrayList<>();
-        this.fila_espera.stream().forEach(e -> res.add(e.clone()));
-        return res;
+    public HashMap<String, List<Encomenda>> getEncomendas() {
+        HashMap<String,List<Encomenda>> copia = new HashMap<>();
+        for(Map.Entry<String,List<Encomenda>> edb: this.encomendas.entrySet()){
+            copia.put(edb.getKey(),(edb.getValue()).stream().map(Encomenda::clone)
+                    .collect(Collectors.toList()));
+        }
+        return copia;
     }
     
     //Setters
-    public void setFilaEspera(List<Utilizador> fila)
-    {
-        this.fila_espera = new ArrayList<>();
-        for(Utilizador util : fila)
-        {
-            this.fila_espera.add(util.clone());
-        }
+    public void setEncomendas(HashMap<String,List<Encomenda>> edb){
+        this.encomendas = new HashMap<>();
+        edb.entrySet().forEach(e -> this.encomendas.put(e.getKey(),(e.getValue()).stream().map(Encomenda::clone)
+                .collect(Collectors.toList())));
     }
     
     //Clone
-    public Loja clone()
-    {
-        return new Loja(this);
-    }
+    public abstract Loja clone();
     
     //toString
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
-        .append("Fila Espera : ").append(this.fila_espera + "\n");
+        .append("Encomendas : ").append(this.encomendas.toString() + "\n");
         return sb.toString();
     }
     
@@ -80,6 +73,6 @@ public class Loja extends User
             return false;
             
         Loja p = (Loja) o;
-        return(super.equals(p) && this.fila_espera.equals(p.getFilaEspera()));
+        return(super.equals(p) && this.getEncomendas().equals(p.getEncomendas()));
     }
 }

@@ -1,0 +1,18 @@
+#BlueJ class context
+comment0.target=EncomendasDB
+comment0.text=\r\n\ Classe\ que\ guarda\ todas\ as\ encomendas\ num\ HashMap,\ em\ que\ a\ chave\ \u00E9\ o\r\n\ username\ do\ utilizador\ que\ pede\ a\ ecomenda,\r\n\ e\ o\ seu\ conteudo\ \u00E9\ a\ Lista\ de\ Encomendas\r\n
+comment1.params=
+comment1.target=EncomendasDB()
+comment2.params=e
+comment2.target=EncomendasDB(EncomendasDB)
+comment3.params=user
+comment3.target=void\ addUser(java.lang.String)
+comment4.params=user
+comment4.target=void\ removeUser(java.lang.String)
+comment5.params=
+comment5.target=EncomendasDB\ clone()
+comment6.params=o
+comment6.target=boolean\ equals(java.lang.Object)
+comment7.params=
+comment7.target=java.lang.String\ toString()
+numComments=8

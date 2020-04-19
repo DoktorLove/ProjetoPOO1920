@@ -11,7 +11,8 @@ import java.util.HashMap;
 public class Empresa extends Transportador
 {
     private double custo_km; //taxa por km percorrido durante entrega
-    private double custo_peso;
+    private double custo_peso; //custo adicional por kg da encomenda
+    private String nif; //nif da empresa transportadora
 
     //Construtor vazio
     public Empresa()
@@ -19,17 +20,19 @@ public class Empresa extends Transportador
         super();
         this.custo_km = 0.0;
         this.custo_peso = 0.0;
+        this.nif = "N/A";
     }
     
     //Construtor por parametros
-    public Empresa(String username, String password, Localizacao posicao,
+    public Empresa(String username, String nome, Localizacao posicao,double raio,
                    boolean transport, boolean transporte_medico,
                    Map<String,Integer> classificacao, HashMap<String, List<Encomenda>> encomendas,
-                   double custo_km, double custo_peso)
+                   double custo_km, double custo_peso, String nif)
     {
-        super(username,password,posicao,transport,transporte_medico,classificacao,encomendas);
+        super(username,nome,posicao,raio, transport,transporte_medico,classificacao,encomendas);
         this.custo_km = custo_km;
         this.custo_peso = custo_peso;
+        this.nif = nif;
     }
     
     //Construtor copia
@@ -38,9 +41,15 @@ public class Empresa extends Transportador
         super(emp);
         this.custo_km = emp.getCusto_Km();
         this.custo_peso = emp.getCusto_Peso();
+        this.nif = emp.getNif();
     }
     
     //Getters
+    public String getNif()
+    {
+        return this.nif;
+    }
+    
     public double getCusto_Km()
     {
         return this.custo_km;
@@ -51,6 +60,11 @@ public class Empresa extends Transportador
     }
 
     //Setters
+    public void setNif(String nif)
+    {
+        this.nif = nif;
+    }
+    
     public void setCusto_Km(double custo)
     {
         this.custo_km = custo;
@@ -66,7 +80,8 @@ public class Empresa extends Transportador
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
         .append("Custo_Km : ").append(this.custo_km + "\n")
-        .append("Custo por peso:").append(this.custo_peso + "\n");
+        .append("Custo por peso:").append(this.custo_peso + "\n")
+        .append("Nif: ").append(this.nif + "\n");
         return sb.toString();
     }
     
@@ -81,6 +96,7 @@ public class Empresa extends Transportador
         Empresa p = (Empresa) o;
         return(super.equals(p) &&
                 this.custo_km == p.getCusto_Km() &&
+                this.nif.equals(p.getNif()) &&
                 this.custo_peso == p.getCusto_Peso());
     }
     

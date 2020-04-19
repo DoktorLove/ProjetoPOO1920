@@ -21,10 +21,10 @@ public class Voluntario extends Transportador
     }
     
     //Construtor por parametros
-    public Voluntario(String username, String password, Localizacao posicao,
+    public Voluntario(String username, String nome, Localizacao posicao,double raio,
                       boolean transport, boolean transporte_medico, Map<String,Integer> classificacao, HashMap<String, List<Encomenda>> encomendas, int idade, String sexo)
     {
-        super(username,password,posicao,transport,transporte_medico,classificacao,encomendas);
+        super(username,nome,posicao,raio, transport,transporte_medico,classificacao,encomendas);
         this.idade = idade;
         this.sexo = sexo;
     }

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 public abstract class User
 {
     private String username; //nome de utilizador para aceder a aplicacao
-    private String password; //password de utilizador para aceder a aplicacao
+    private String nome; //nome do utilizador
     private Localizacao posicao; //posicao atual do utilizador
     //raio de acao
     
@@ -17,14 +17,14 @@ public abstract class User
     {
         this.posicao = new Localizacao();
         this.username = "N/A";
-        this.password = "N/A";
+        this.nome = "N/A";
     }
     
     //Construtor por parametros
-    public User(String username, String password, Localizacao local)
+    public User(String username, String nome, Localizacao local)
     {
         this.username = username;
-        this.password = password;
+        this.nome = nome;
         this.posicao = local.clone();
     }
     
@@ -32,7 +32,7 @@ public abstract class User
     public User(User newUser)
     {
         this.username = newUser.getUsername();
-        this.password = newUser.getPassword();
+        this.nome = newUser.getNome();
         this.posicao = newUser.getPosicao();
     }
     
@@ -42,9 +42,9 @@ public abstract class User
         return this.username;
     }
     
-    public String getPassword()
+    public String getNome()
     {
-        return this.password;
+        return this.nome;
     }
     
     public Localizacao getPosicao()
@@ -58,9 +58,9 @@ public abstract class User
         this.username = username;
     }
     
-    public void setPassword(String password)
+    public void setNome(String nome)
     {
-        this.password = password;
+        this.nome = nome;
     }
     
     public void setLocalizacao(Localizacao local)
@@ -75,7 +75,7 @@ public abstract class User
         if(o==null||o.getClass() != this.getClass()) return false;
         User t = (User) o;
         return this.username.equals(t.getUsername()) && 
-               this.password.equals(t.getPassword()) &&
+               this.nome.equals(t.getNome()) &&
                this.posicao.equals(t.getPosicao());
     }
     
@@ -84,7 +84,7 @@ public abstract class User
     {
         StringBuilder sb = new StringBuilder();
         sb.append("\nUsername: ").append(this.username)
-          .append("\nPassword: ").append(this.password + "\n")
+          .append("\nNome: ").append(this.nome + "\n")
           .append(this.posicao.toString());
         return sb.toString();
     }

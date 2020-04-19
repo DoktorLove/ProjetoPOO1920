@@ -16,6 +16,7 @@ public abstract class Transportador extends User
     private boolean transporte_medico; // aceitacao ou nao de transporte de produtos medicos
     private Map<String,Integer> classificacao;//classificacoes feitas pelos utilizadores
     private Map<String,List<Encomenda>> encomendas;//map que mostra as encomendas a ser transportadas
+    private double raio; //representa a raio no qual a transportadora pode trabalhar
     
     //Construtor por omissao
     public Transportador()
@@ -24,15 +25,17 @@ public abstract class Transportador extends User
         this.transporte_medico = false;
         this.classificacao = new HashMap<>();
         this.encomendas = new HashMap<>();
+        this.raio = 0.0;
     }
     
     //Construtor por parametros
-    public Transportador(String username,String password, Localizacao posicao, 
+    public Transportador(String username,String nome, Localizacao posicao,double raio, 
     boolean tp, boolean tp_medico, Map<String,Integer> clas, HashMap<String,List<Encomenda>> encomendas)
     {
-        super(username, password, posicao);
+        super(username, nome, posicao);
         this.transporte = tp;
         this.transporte_medico = tp_medico;
+        this.raio = raio;
         setClassificacoes(clas);
         setEncomendas(encomendas);
     }
@@ -42,11 +45,17 @@ public abstract class Transportador extends User
     {
         this.transporte = trans.getTransporte();
         this.transporte_medico = trans.getTransporteMedico();
+        this.raio = trans.getRaio();
         setClassificacoes(trans.getClassificacoes());
         setEncomendas(trans.getEncomendas());
     }
     
     //Gets
+    public double getRaio()
+    {
+        return this.raio;
+    }
+    
     public Map<String,Integer> getClassificacoes()
     {
         Map<String,Integer> ret = new HashMap<>();
@@ -77,6 +86,11 @@ public abstract class Transportador extends User
     }
     
     //Sets
+    public void setRaio(double raio)
+    {
+        this.raio = raio;
+    }
+    
     public void setClassificacoes(Map<String,Integer> clas)
     {
         this.classificacao = new HashMap<>();
@@ -131,7 +145,8 @@ public abstract class Transportador extends User
         .append("\nTransporte disponivel: ").append(this.transporte)
         .append("\nTransporte médico: ").append(this.transporte_medico + "\n")
         .append(this.classificacao.toString()+"\n")
-        .append(this.encomendas.toString()+"\n");
+        .append(this.encomendas.toString()+"\n")
+        .append("\nRaio de trabalho: ").append(this.raio);
         return sb.toString();
     }
 
@@ -142,6 +157,7 @@ public abstract class Transportador extends User
         return this.getTransporte() == v.getTransporte() &&
                 this.getTransporteMedico() == v.getTransporteMedico() &&
                 this.getClassificacoes().equals(v.getClassificacoes()) &&
+                this.getRaio() == v.getRaio() &&
                 this.getEncomendas().equals(v.getEncomendas());
     }
 

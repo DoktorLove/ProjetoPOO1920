@@ -1,0 +1,225 @@
+@startuml
+
+title Driveit
+
+abstract class User
+{
+    -username:String
+    -nome: String
+    -posicao:Localizacao
+    +User()
+    +username: String; nome: String; local:Localizacao ): User
+    +User(newUser: User): User
+    +getUsername(): String
+    +getNome(): String
+    +getPosicao():Localizacao
+    +setUsername(username: String): void
+    +setNome(nome: String): void
+    +setLocalizacao(local:Localizacao ): void
+    +equals(o: Object):boolean
+    +toString():String
+    +abstract Userclone();
+}
+
+class Utilizador extends User
+{
+    -idade:int
+    -sexo:String
+    +Utilizador()
+    +Utilizador(username:String;nome:String; local:Localizacao; idade:int;  sexo:String)
+    +Utilizador(util:Utilizador)
+    +getIdade(): Int
+    +getSexo(): String
+    +clone(): Utilizador
+    +setIdade(idade: int): void
+    +setSexo(sexo: String): void
+    +toString(): String
+    +equals(): Boolean
+}
+
+abstract class Loja extends User
+{
+    -encomendas: Map<String,List<Encomenda>>
+
+    +Loja()
+    +Loja(username:String; nome:String; local:Localizacao; encomendas:HashMap<String,List<Encomenda>>)
+    +Loja(novaloja: Loja)
+    +getEncomendas(): HashMap<String, List<Encomenda>>
+    +setEncomendas(HashMap<String,List<Encomenda>> edb): void
+    +abstract clone(): Loja
+    +toString(): String
+    +equals(o: Object ): boolean
+}
+
+abstract class Transportador extends User
+{
+    -transporte: boolean
+    -transporte_medico: boolean
+    -classificacao:Map<String,Integer>
+    -encomendas:Map<String,List<Encomenda>>
+    -raio: double
+
+    +Transportador()
+    +Transportador(username:String ;nome:String; posicao:Localizacao; raio:double; tp:boolean; tp_medico:boolean; clas: Map<String,Integer>; encomendas:HashMap<String,List<Encomenda>>)
+    +getRaio():double
+    +getClassificacoes(): Map<String,Integer>
+    +getEncomendas():HashMap<String, List<Encomenda>>
+    +getTransporte():boolean
+    +getTransporteMedico(): boolean
+    +setRaio(raio: double): void
+    +setClassificacoes(clas: Map<String,Integer> ): void
+    +setEncomendas(edb: HashMap<String,List<Encomenda>>):void
+    +setTransporte(boolean tp): void
+    +setTransporteMedico(boolean tp_medico): void
+    +addClassificacao(name: String; classificacao: int): void
+    +removeClassificacao(name: String ):void
+    +aceitoTransportMedico(): boolean
+    +aceitaMedicamentos(med: boolean): void
+    +toString(): String
+    +equals(o: Object): boolean
+    +abstract Transportador clone();
+}
+
+class Voluntario extends Transportador
+{
+    -idade: int
+    -sexo: String
+    +Voluntario()
+    +Voluntario(username: String; nome:String; posicao: Localizacao; raio: double; transport:boolean; transporte_medico:boolean; classificacao:Map<String,Integer>; encomendas:HashMap<String, List<Encomenda>>; idade:int; sexo:String)
+    +Voluntario(vol: Voluntario)
+    +getIdade(): int
+    +getSexo(): String
+    +clone(): Voluntario
+    +setIdade(): void
+    +setSexo(): void
+    +toString(): String
+    +equals(): Boolean
+}
+
+class Empresa extends Transportador
+{
+    -custo_km: double
+    -custo_peso: double
+    -nif: String
+
+    +Empresa()
+    +Empresa(username: String; nome: String; posicao: Localizacao; raio: Localizacao;transport: boolean; transporte_medico: boolean; classificacao: Map<String,Integer>; encomendas: HashMap<String, List<Encomenda>>;
+                   custo_km: double; custo_peso: double; nif: String)
+    +Empresa(Empresa emp)
+    +getNif():  String
+    +getCusto_Km(): double
+    +getCusto_Peso(): double
+    +setNif(String nif): void
+    +setCusto_Km(double custo): void
+    +setCusto_peso(double custo_peso): void
+    +toString(): String
+    +equals(Object o): boolean
+    +Empresa clone()
+}
+
+class LojaSemFila extends Loja
+{
+    +LojaSemFila()
+    +LojaSemFila(username: String; nome:String; local: Localizacao; encomendas:HashMap<String,List<Encomenda>>)
+    +LojaSemFila(loj: LojaSemFila)
+    +toString(): String
+    +equals(Object o): boolean
+    +clone(): LojaSemFila
+}
+
+class LojaComFila extends Loja
+{
+    -fila_espera: List<Utilizador>
+    +LojaComFila(username:String; nome:String; local:Localizacao; encomendas:HashMap<String,List<Encomenda>>; fila_espera: List<Utilizador>)
+    +LojaComFila(loj: LojaComFila)
+    +getFila(): List<Utilizador>
+    +setFila(fil: List<Utilizador>): void
+    +toString(): String
+    +equals(o: Object): boolean
+    +clone(): LojaComFila
+}
+
+class Localizacao
+{
+    -latitude: double
+    -longitude: double
+
+    +Localizacao()
+    +Localizacao(lat:double; lon:double)
+    +Localizacao(local: Localizacao)
+    +getLatitude(): double
+    +getLongitude(): double
+    +setLatitude(lat: double): void
+    +setLongitude(lon: double): void
+    +equals(loc: Localizacao ): boolean
+    +toString(): String
+    +clone(): Localizacao
+}
+
+class EncomendasDB {
+    -encomendasDB: HashMap<String, List<Encomenda>>
+
+    +EncomendasDB()
+    +EncomendasDB(e: EncomendasDB)
+    +getEncomendasDB(): HashMap<String, List<Encomenda>>
+    +setEncomendasDB(edb: HashMap<String,List<Encomenda>>): void
+    +addUser(user: String):void
+    +removeUser(user: String): void
+    +addEncomenda(e: Encomenda): void
+    +removeEncomenda(e: Encomenda): void
+    +clone(): EncomendasDB
+    +equals(o:Object): boolean
+    +toString(): String
+}
+
+class Encomenda
+{
+    -utilizador: String
+    -loja: String;
+    -hora: LocalDateTime
+    -peso: double
+    -produtos: List<String>
+    -medica: boolean
+    -entregue: boolean
+
+    +Encomenda()
+    +Encomenda(utilizador: String; loja: String; hora:LocalDateTime; peso: double; produtos: List<String>; medica: boolean; entregue:boolean)
+    +Encomenda(e: Encomenda)
+    +getUtilizador(): String
+    +getLoja(): String
+    +getHora(): LocalDateTime
+    +getPeso(): double
+    +getProdutos():List<String>
+    +getMedica(): boolean
+    +getEntregue(){: boolean
+    +setUtilizador(utilizador: String): void
+    +setLoja(loja: String): void
+    +setHora(hora: LocalDateTime): void
+    +setPeso(peso: double): void
+    +(produtos: List<String>): void
+    +setMedica(medica: boolean): void
+    +setEntregue(entregue: boolean ): void
+    +clone(): Encomenda
+    +toString(): String
+    +equals(Object o): boolean
+}
+
+class TrazAqui
+{
+    -nome: String
+    -users: Map<String, User>
+    -encomenda: Map<String, Encomenda>
+    -aceites:List<String>
+    +TrazAqui()
+    +TrazAqui(t: TrazAqui)
+    +TrazAqui(nome: String; users:Map<String, User>; encomendas:Map<String,Encomenda>; aceites:List<String>)
+}
+
+TrazAqui *--> "0..*" User : contém(list)
+TrazAqui *--> "0..*" Encomenda : contém(list)
+Loja *--> "0..*" Encomenda : contém(list)
+Transportador *--> "0..*" Encomenda : contém(list)
+EncomendasDB *--> "0..*" Encomenda : contém(list)
+User --> "1" Localizacao
+@enduml
+

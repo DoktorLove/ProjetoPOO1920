@@ -1,6 +1,8 @@
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Random;
+
 /**
  * Classe que trata dos voluntarios que entregam as encomendas
  * 
@@ -64,7 +66,18 @@ public class Voluntario extends Transportador
     {
         this.sexo = sexo;
     }
-    
+
+    public String getRandomSexo(){
+        Random r = new Random();
+        boolean s = r.nextBoolean();
+        if(s) {
+            return "Feminino";
+        }
+        else{
+            return "Masculino";
+        }
+    }
+
     //Metodo toString
     public String toString()
     {

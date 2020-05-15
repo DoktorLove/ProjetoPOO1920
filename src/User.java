@@ -83,9 +83,9 @@ public abstract class User
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nUsername: ").append(this.username)
+        sb.append("\nUsername: ").append(this.username + "\n")
           .append("\nNome: ").append(this.nome + "\n")
-          .append(this.posicao.toString());
+          .append(this.posicao.toString() + "\n");
         return sb.toString();
     }
     

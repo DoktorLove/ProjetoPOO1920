@@ -126,13 +126,28 @@ public class TrazAquiApp extends Application{
     public void start(Stage stage) throws Exception {
         stage.setTitle("TrazAquiApp");
 
-        run(stage);
+        run2(stage);
 
         stage.show();
     }
+    private void run2(Stage stage) throws Exception{
+        ScrollPane sp = new ScrollPane();
+        VBox box = new VBox();
+        VBox vCaixa = new VBox();
+        Scene cena = new Scene(box,300,300);
+        stage.setScene(cena);
+        box.getChildren().add(sp);
+        TrazAqui ta = TrazAqui.importaCSV("TrazAquiApp","/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/LogsGerados.csv");
+        String s = ta.toString();
+        System.out.println(s);
+        Label l = new Label(s);
+        vCaixa.getChildren().add(l);
+        sp.setContent(vCaixa);
 
+    }
+    /**
     private void run(Stage stage) throws Exception {
-        Pair<Scene,List<Control>> p = this.menuInit.executeFormat();
+        Pair<Scene,List<Control>> p = this.menuInit.executeFormatGrid();
         Scene init = p.getKey();
         stage.setScene(init);
         List<Control> l = p.getValue();
@@ -153,9 +168,9 @@ public class TrazAquiApp extends Application{
         });
 
     }
-
+*/
     public void logIn(Stage stage, Scene scene) throws Exception {
-        Pair<Scene,List<Control>> p = this.menuLogIn.executeFormat();
+        Pair<Scene,List<Control>> p = this.menuLogIn.executeFormatGrid();
         Scene logIn = p.getKey();
         stage.setScene(logIn);
         List<Control> l = p.getValue();
@@ -168,7 +183,7 @@ public class TrazAquiApp extends Application{
     }
 
     public void DifUsers(Stage stage,Scene scene) throws Exception {
-        Pair<Scene,List<Control>> p = this.menuDifUsers.executeFormat();
+        Pair<Scene,List<Control>> p = this.menuDifUsers.executeFormatGrid();
         Scene DifUsers = p.getKey();
         stage.setScene(DifUsers);
         List<Control> l = p.getValue();
@@ -202,7 +217,7 @@ public class TrazAquiApp extends Application{
     }
 
     public void signIn(Stage stage, Scene scene) throws Exception {
-        Pair<Scene,List<Control>> p = this.menuSignIn.executeFormat();
+        Pair<Scene,List<Control>> p = this.menuSignIn.executeFormatGrid();
         Scene signIn = p.getKey();
         stage.setScene(signIn);
         List<Control> l = p.getValue();
@@ -213,7 +228,7 @@ public class TrazAquiApp extends Application{
     }
 
     public void signInLoja(Stage stage, Scene scene) throws Exception {
-        Pair<Scene,List<Control>> p = this.menuSignInLoja.executeFormat();
+        Pair<Scene,List<Control>> p = this.menuSignInLoja.executeFormatGrid();
         Scene signInLoja = p.getKey();
         stage.setScene(signInLoja);
         List<Control> l = p.getValue();
@@ -240,7 +255,7 @@ public class TrazAquiApp extends Application{
     }
 
     public void signInEmpresa(Stage stage, Scene scene) throws Exception {
-        Pair<Scene,List<Control>> p = this.menuSignInEmpresa.executeFormat();
+        Pair<Scene,List<Control>> p = this.menuSignInEmpresa.executeFormatGrid();
         Scene signInEmpresa = p.getKey();
         stage.setScene(signInEmpresa);
         List<Control> l = p.getValue();

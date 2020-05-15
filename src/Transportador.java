@@ -43,6 +43,7 @@ public abstract class Transportador extends User
     //Construtor copia
     public Transportador(Transportador trans)
     {
+        super(trans);
         this.transporte = trans.getTransporte();
         this.transporte_medico = trans.getTransporteMedico();
         this.raio = trans.getRaio();
@@ -142,11 +143,11 @@ public abstract class Transportador extends User
     public String toString(){
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
-        .append("\nTransporte disponivel: ").append(this.transporte)
+        .append("\nTransporte disponivel: ").append(this.transporte + "\n")
         .append("\nTransporte médico: ").append(this.transporte_medico + "\n")
         .append(this.classificacao.toString()+"\n")
         .append(this.encomendas.toString()+"\n")
-        .append("\nRaio de trabalho: ").append(this.raio);
+        .append("\nRaio de trabalho: ").append(this.raio + "\n");
         return sb.toString();
     }
 

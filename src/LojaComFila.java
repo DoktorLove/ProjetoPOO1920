@@ -60,7 +60,7 @@ public class LojaComFila extends Loja
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
-        .append("Fila de Espera: ").append(this.fila_espera.toString());
+        .append("Fila de Espera: ").append(this.fila_espera.toString() + "\n");
         return sb.toString();
     }
     

@@ -36,7 +36,7 @@ public class LojaSemFila extends Loja
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
-        .append("Fila de espera indisponivel de momento...");
+        .append("Fila de espera indisponivel de momento..." + "\n");
         return sb.toString();
     }
     

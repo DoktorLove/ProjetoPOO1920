@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -79,7 +80,7 @@ public class Menu{
         return lst;
     }
 
-    public Pair<Scene,List<Control>> executeFormat() throws Exception {
+    public Pair<Scene,List<Control>> executeFormatGrid() throws Exception {
         List<Control> lst = format();
         GridPane layoutInic = new GridPane();
         layoutInic.setPadding(new Insets(50,10,10,35));
@@ -90,6 +91,20 @@ public class Menu{
         Pair<Scene,List<Control>> par = new Pair<>(scene,lst);
         return par;
     }
+    /**
+    public Pair<Scene,List<Control>> executeFormatScroll() throws Exception {
+        VBox layoutInic = new VBox();
+        Scene scene = new Scene(layoutInic,350,400);
 
+
+        layoutInic.getChildren().add(sp);
+        Pair<Scene,List<Control>> p = this.executeFormatGrid();
+        List<Control> lista = p.getValue();
+        sp.setContent(lista.get(0));
+
+        Pair<Scene,List<Control>> par = new Pair<>(scene,new ArrayList<>());
+        return par;
+    }
+     */
 
 }

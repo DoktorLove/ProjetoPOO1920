@@ -4,15 +4,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Encomenda {
+    private String codigo;
     private String utilizador;
     private String loja;
     private LocalDateTime hora;
     private double peso;
-    private List<String> produtos;
+    private List<LinhaEncomenda> produtos;
     private boolean medica;
     private boolean entregue;
 
     public Encomenda(){
+        this.codigo = "N/A";
         this.utilizador = "N/A";
         this.loja = "N/A";
         this.hora = LocalDateTime.now();
@@ -22,8 +24,9 @@ public class Encomenda {
         this.entregue = false;
     }
 
-    public Encomenda(String utilizador, String loja, LocalDateTime hora,
-                     double peso, List<String> produtos, boolean medica, boolean entregue){
+    public Encomenda(String codigo,String utilizador, String loja, LocalDateTime hora,
+                     double peso, List<LinhaEncomenda> produtos, boolean medica, boolean entregue){
+        this.codigo = codigo;
         this.utilizador = utilizador;
         this.loja = loja;
         this.hora = hora;
@@ -34,6 +37,7 @@ public class Encomenda {
     }
 
     public Encomenda(Encomenda e){
+        this.codigo = e.getCodigo();
         this.utilizador = e.getUtilizador();
         this.loja = e.getLoja();
         this.hora = e.getHora();
@@ -41,6 +45,10 @@ public class Encomenda {
         setProdutos(e.getProdutos());
         this.medica = e.getMedica();
         this.entregue =e.getEntregue();
+    }
+
+    public String getCodigo(){
+        return this.codigo;
     }
 
     public String getUtilizador() {
@@ -59,8 +67,10 @@ public class Encomenda {
         return this.peso;
     }
 
-    public List<String> getProdutos() {
-        return new ArrayList<>(this.produtos);
+    public List<LinhaEncomenda> getProdutos() {
+        List<LinhaEncomenda> l = new ArrayList<>();
+        this.produtos.stream().forEach(e->l.add(e.clone()));
+        return l;
     }
 
     public boolean getMedica(){
@@ -69,6 +79,10 @@ public class Encomenda {
 
     public boolean getEntregue(){
         return this.entregue;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
 
     public void setUtilizador(String utilizador) {
@@ -87,8 +101,24 @@ public class Encomenda {
         this.peso = peso;
     }
 
-    public void setProdutos(List<String> produtos) {
-        this.produtos = new ArrayList<>(produtos);
+    public void setProdutos(List<LinhaEncomenda> produtos) {
+        this.produtos = new ArrayList<>();
+        produtos.stream().forEach(e->this.produtos.add(e.clone()));
+    }
+
+    public void adicionaLinha(LinhaEncomenda linha){
+        this.produtos.add(linha.clone());
+    }
+
+    public void removeProduto(String codProd){
+        for(LinhaEncomenda l: this.produtos){
+            if(l.getReferencia().equals(codProd)){
+                this.produtos.remove(l);
+            }
+        }
+        /**
+         * this.encomenda.removeIf(l -> l.getReferencia().equals(codProd));
+         */
     }
 
     public void setMedica(boolean medica) {
@@ -106,7 +136,8 @@ public class Encomenda {
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
-        sb.append("\nUtilizador: ").append(this.utilizador + "\n")
+        sb.append("\nCodigo: ").append(this.codigo + "\n")
+                .append("\nUtilizador: ").append(this.utilizador + "\n")
                 .append("Loja: ").append(this.loja + "\n")
                 .append("Hora: ").append(this.hora + "\n")
                 .append("Peso : ").append(this.peso + "\n")
@@ -120,7 +151,8 @@ public class Encomenda {
         if(this == o) return true;
         if(o == null || this.getClass() != o.getClass()) return false;
         Encomenda e = (Encomenda) o;
-        return this.getUtilizador().equals(e.getUtilizador()) &&
+        return this.getCodigo().equals(e.getCodigo()) &&
+                this.getUtilizador().equals(e.getUtilizador()) &&
                 this.getLoja().equals(e.getLoja()) &&
                 this.getHora().equals(e.getHora()) &&
                 this.getPeso() == e.getPeso() &&

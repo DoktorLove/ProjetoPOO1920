@@ -1,5 +1,7 @@
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Random;
+
 /**
  * Classe que tratas das pessoas que querem encomendar algo
  * 
@@ -62,7 +64,18 @@ public class Utilizador extends User
     {
         this.sexo = sexo;
     }
-    
+
+    public String getRandomSexo(){
+        Random r = new Random();
+        boolean s = r.nextBoolean();
+        if(s) {
+            return "Feminino";
+        }
+        else{
+            return "Masculino";
+        }
+    }
+
     //Metodo toString
     public String toString()
     {

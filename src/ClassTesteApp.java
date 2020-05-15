@@ -6,6 +6,7 @@ import java.util.List;
 public class ClassTesteApp {
 
     public static void main(String args[]){
+        /**
         Voluntario pedro = new Voluntario("Pedro","1234",new Localizacao(),
                                         true,false,new HashMap<String,Integer>(),
                                         new HashMap<String,List<Encomenda>>(),23,"non-binary");
@@ -16,6 +17,7 @@ public class ClassTesteApp {
 
         Loja bolama = new Loja("Bolama","12345",new Localizacao(12.2,13.2),
                                         new ArrayList<Utilizador>());
+
         pedro.addClassificacao("Joel",3);
         pedro.addClassificacao("Manuel",5);
         sonae.addClassificacao("Pedro",1);
@@ -58,11 +60,14 @@ public class ClassTesteApp {
         edb.addUser("Manuel");
         System.out.println("_____BASE DE DADOS: ENCOMENDAS_____\n" + edb.toString());
         edb.removeUser("Manuel");
-        /**
+         */
+         /**
          * teste que verifica se é possivel alterar o list do map a partir da
          * classe Encomenda(no map tem de aparecer "Lidl" em vez de "Continente")
          */
-        d.setLoja("Continente");
+        /**
+         d.setLoja("Continente");
         System.out.println("_____BASE DE DADOS: ENCOMENDAS_____\n" + edb.toString());
+        */
     }
 }

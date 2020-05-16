@@ -29,10 +29,10 @@ public abstract class Transportador extends User
     }
     
     //Construtor por parametros
-    public Transportador(String username,String nome, Localizacao posicao,double raio, 
+    public Transportador(String username,String nome, String password,Localizacao posicao,double raio,
     boolean tp, boolean tp_medico, Map<String,Integer> clas, HashMap<String,List<Encomenda>> encomendas)
     {
-        super(username, nome, posicao);
+        super(username, nome, password,posicao);
         this.transporte = tp;
         this.transporte_medico = tp_medico;
         this.raio = raio;

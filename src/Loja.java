@@ -22,9 +22,9 @@ public abstract class Loja extends User
     }
     
     //Construtor por parametros
-    public Loja(String username, String nome, Localizacao local,HashMap<String,List<Encomenda>> encomendas)
+    public Loja(String username, String nome,String password,Localizacao local,HashMap<String,List<Encomenda>> encomendas)
     {
-        super(username,nome,local);
+        super(username,nome,password,local);
         setEncomendas(encomendas);
     }
     

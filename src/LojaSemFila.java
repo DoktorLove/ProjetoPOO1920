@@ -19,10 +19,10 @@ public class LojaSemFila extends Loja
     }
     
     //Construtor por parametros
-    public LojaSemFila(String username, String nome, Localizacao local,
+    public LojaSemFila(String username, String nome, String password,Localizacao local,
     HashMap<String,List<Encomenda>> encomendas)
     {
-        super(username,nome,local,encomendas);
+        super(username,nome,password,local,encomendas);
     }
     
     //Construtor por copia

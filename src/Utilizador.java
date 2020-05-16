@@ -22,9 +22,9 @@ public class Utilizador extends User
     }
     
     //Construtor por parametros
-    public Utilizador(String username, String nome, Localizacao local, int idade, String sexo)
+    public Utilizador(String username, String nome, String password,Localizacao local, int idade, String sexo)
     {
-        super(username,nome,local);
+        super(username,nome,password,local);
         this.idade = idade;
         this.sexo = sexo;
     }

@@ -139,6 +139,34 @@ public class TrazAqui {
         return h;
     }
 
+    public static Localizacao criaLocalizacao(double x, double y){
+        return new Localizacao(x,y);
+    }
+
+    public static Utilizador criaUtilizador(String username, String nome, String password,Localizacao local, int idade, String sexo){
+        return new Utilizador(username,nome,password,local,idade,sexo);
+    }
+
+    public static Voluntario criaVoluntario(String username, String nome, String password,Localizacao posicao,double raio,
+                                     boolean transport, boolean transporte_medico, Map<String,Integer> classificacao, HashMap<String, List<Encomenda>> encomendas, int idade, String sexo){
+        return new Voluntario(username,nome,password,posicao,raio,transport,transporte_medico,classificacao,encomendas,idade,sexo);
+    }
+    public static Empresa criaEmpresa(String username, String nome, String password,Localizacao posicao,double raio,
+                                  boolean transport, boolean transporte_medico,
+                                  Map<String,Integer> classificacao, HashMap<String, List<Encomenda>> encomendas,
+                                  double custo_km, double custo_peso, String nif){
+        return new Empresa(username,nome,password,posicao,raio,transport,transporte_medico,classificacao,encomendas,custo_km,custo_peso,nif);
+    }
+
+    public static Loja criaLoja(String username, String nome,String password,Localizacao local,HashMap<String,List<Encomenda>> encomendas,boolean fila){
+        if(fila == true){
+            return new LojaComFila(username,nome,password,local,encomendas,new ArrayList<Utilizador>());
+        }
+        else{
+            return new LojaSemFila(username,nome,password,local,encomendas);
+        }
+    }
+
     public void adicionaUser(User h)
     {
         this.users.put(h.getUsername(), h.clone());
@@ -240,7 +268,7 @@ public class TrazAqui {
         l.setLongitude(gpsy);
         u.setUsername(username);
         u.setNome(nome);
-        u.setLocalizacao(l);
+        u.setPosicao(l);
         u.setSexo(u.getRandomSexo());
         u.setIdade(r.nextInt(100));
         return u;
@@ -261,7 +289,7 @@ public class TrazAqui {
         l.setLongitude(gpsy);
         v.setUsername(username);
         v.setNome(nome);
-        v.setLocalizacao(l);
+        v.setPosicao(l);
         v.setSexo(v.getRandomSexo());
         v.setIdade(r.nextInt(100));
         v.setTransporteMedico(r.nextBoolean());
@@ -287,7 +315,7 @@ public class TrazAqui {
         l.setLongitude(gpsy);
         e.setUsername(username);
         e.setNome(nome);
-        e.setLocalizacao(l);
+        e.setPosicao(l);
         e.setNif(nif);
         e.setRaio(raio);
         e.setCusto_Km(custo_km);
@@ -311,14 +339,14 @@ public class TrazAqui {
             LojaSemFila ls = new LojaSemFila();
             ls.setUsername(username);
             ls.setNome(nome);
-            ls.setLocalizacao(l);
+            ls.setPosicao(l);
             return ls;
         }
         else{
             LojaComFila lf = new LojaComFila();
             lf.setUsername(username);
             lf.setNome(nome);
-            lf.setLocalizacao(l);
+            lf.setPosicao(l);
             return lf;
         }
     }
@@ -359,6 +387,26 @@ public class TrazAqui {
         e.setPeso(peso);
         e.setCodigo(codigo);
         return e;
+    }
+
+    //Método guarda estado
+    public void guardaEstado(String nomeFicheiro) throws FileNotFoundException,IOException {
+        FileOutputStream fos = new FileOutputStream(nomeFicheiro);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
+        oos.writeObject(this); //guarda-se todo o objecto de uma só vez
+        oos.flush();
+        oos.close();
+    }
+
+    //Método carrega estado
+    public static TrazAqui carregaEstado(String nomeFicheiro) throws FileNotFoundException,
+            IOException,
+            ClassNotFoundException {
+        FileInputStream fis = new FileInputStream(nomeFicheiro);
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        TrazAqui h = (TrazAqui) ois.readObject();
+        ois.close();
+        return h;
     }
 
 }

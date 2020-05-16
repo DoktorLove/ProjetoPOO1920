@@ -22,10 +22,10 @@ public class LojaComFila extends Loja
     }
     
     //Construtor por parametros
-    public LojaComFila(String username, String nome, Localizacao local,
+    public LojaComFila(String username, String nome, String password,Localizacao local,
     HashMap<String,List<Encomenda>> encomendas,List<Utilizador> fila_espera)
     {
-        super(username,nome,local,encomendas);
+        super(username,nome,password,local,encomendas);
         this.setFila(fila_espera);
     }
     

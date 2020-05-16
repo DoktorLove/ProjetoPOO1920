@@ -9,6 +9,7 @@ public abstract class User
 {
     private String username; //nome de utilizador para aceder a aplicacao
     private String nome; //nome do utilizador
+    private String password;
     private Localizacao posicao; //posicao atual do utilizador
     //raio de acao
     
@@ -18,13 +19,15 @@ public abstract class User
         this.posicao = new Localizacao();
         this.username = "N/A";
         this.nome = "N/A";
+        this.password = "N/A";
     }
     
     //Construtor por parametros
-    public User(String username, String nome, Localizacao local)
+    public User(String username, String nome, String password,Localizacao local)
     {
         this.username = username;
         this.nome = nome;
+        this.password = password;
         this.posicao = local.clone();
     }
     
@@ -33,6 +36,7 @@ public abstract class User
     {
         this.username = newUser.getUsername();
         this.nome = newUser.getNome();
+        this.password = newUser.getPassword();
         this.posicao = newUser.getPosicao();
     }
     
@@ -46,7 +50,11 @@ public abstract class User
     {
         return this.nome;
     }
-    
+
+    public String getPassword() {
+        return this.password;
+    }
+
     public Localizacao getPosicao()
     {
         return this.posicao.clone();
@@ -62,8 +70,12 @@ public abstract class User
     {
         this.nome = nome;
     }
-    
-    public void setLocalizacao(Localizacao local)
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setPosicao(Localizacao local)
     {
         this.posicao = local.clone();
     }
@@ -76,6 +88,7 @@ public abstract class User
         User t = (User) o;
         return this.username.equals(t.getUsername()) && 
                this.nome.equals(t.getNome()) &&
+                this.password.equals(t.getNome()) &&
                this.posicao.equals(t.getPosicao());
     }
     
@@ -85,7 +98,8 @@ public abstract class User
         StringBuilder sb = new StringBuilder();
         sb.append("\nUsername: ").append(this.username + "\n")
           .append("\nNome: ").append(this.nome + "\n")
-          .append(this.posicao.toString() + "\n");
+          .append("\nPassword: ").append(this.password + "\n")
+            .append(this.posicao.toString() + "\n");
         return sb.toString();
     }
     

@@ -126,10 +126,11 @@ public class TrazAquiApp extends Application{
     public void start(Stage stage) throws Exception {
         stage.setTitle("TrazAquiApp");
 
-        run2(stage);
+        run(stage);
 
         stage.show();
     }
+    /**
     private void run2(Stage stage) throws Exception{
         ScrollPane sp = new ScrollPane();
         VBox box = new VBox();
@@ -145,7 +146,8 @@ public class TrazAquiApp extends Application{
         sp.setContent(vCaixa);
 
     }
-    /**
+     */
+
     private void run(Stage stage) throws Exception {
         Pair<Scene,List<Control>> p = this.menuInit.executeFormatGrid();
         Scene init = p.getKey();
@@ -168,7 +170,7 @@ public class TrazAquiApp extends Application{
         });
 
     }
-*/
+
     public void logIn(Stage stage, Scene scene) throws Exception {
         Pair<Scene,List<Control>> p = this.menuLogIn.executeFormatGrid();
         Scene logIn = p.getKey();
@@ -222,6 +224,14 @@ public class TrazAquiApp extends Application{
         stage.setScene(signIn);
         List<Control> l = p.getValue();
 
+        l.get(l.size()-2).setOnMousePressed(e-> {
+            try {
+                signInUtilizador(stage,signIn,l);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        });
+
         l.get(l.size()-1).setOnMousePressed(e->{
             stage.setScene(scene);
         });
@@ -263,6 +273,35 @@ public class TrazAquiApp extends Application{
         l.get(l.size()-1).setOnMousePressed(e->{
             stage.setScene(scene);
         });
+    }
+
+    private void signInUtilizador(Stage stage, Scene scene,List<Control> l) throws Exception {
+        String username = ((TextField)l.get(1)).getText();
+        String nome = ((TextField)l.get(3)).getText();
+        String password = ((TextField)l.get(5)).getText();
+        int idade = Integer.parseInt(((TextField)l.get(7)).getText());
+        String sexo = "Apashe";
+        if((((CheckBox) l.get(8)).isSelected())){
+            sexo = "Masculino";
+        }
+        if((((CheckBox) l.get(9)).isSelected())){
+            sexo = "Feminino";
+        }
+        logNegocio = TrazAqui.importaCSV("TrazAquiApp","/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/LogsGerados.csv");
+        logNegocio.adicionaUser(logNegocio.criaUtilizador(username,nome,password,logNegocio.criaLocalizacao(0.0,0.0),idade,sexo));
+
+        ScrollPane sp = new ScrollPane();
+        VBox box = new VBox();
+        VBox vCaixa = new VBox();
+        Scene cena = new Scene(box,300,300);
+        stage.setScene(cena);
+        box.getChildren().add(sp);
+        String s = logNegocio.toString();
+        System.out.println(s);
+        Label la = new Label(s);
+        vCaixa.getChildren().add(la);
+        sp.setContent(vCaixa);
+
     }
 
     /**

@@ -1,3 +1,4 @@
+import java.io.Serializable;
 
 /**
  * Classe que trata das localizacoes
@@ -5,7 +6,7 @@
  * @author Rui Cunha
  * @version 06/04/2020
  */
-public class Localizacao
+public class Localizacao implements Serializable
 {
     private double latitude;
     private double longitude;

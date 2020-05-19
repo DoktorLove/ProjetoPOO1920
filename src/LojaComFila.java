@@ -23,9 +23,9 @@ public class LojaComFila extends Loja
     
     //Construtor por parametros
     public LojaComFila(String username, String nome, String password,Localizacao local,
-    HashMap<String,List<Encomenda>> encomendas,List<Utilizador> fila_espera)
+    HashMap<String,List<Encomenda>> encomendas, HashMap<String,Integer> classificacao,List<Utilizador> fila_espera)
     {
-        super(username,nome,password,local,encomendas);
+        super(username,nome,password,local,encomendas,classificacao);
         this.setFila(fila_espera);
     }
     

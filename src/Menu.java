@@ -1,5 +1,6 @@
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -8,8 +9,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
@@ -90,6 +90,45 @@ public class Menu{
         Scene scene = new Scene(layoutInic,350,400);
         Pair<Scene,List<Control>> par = new Pair<>(scene,lst);
         return par;
+    }
+
+    public static Scene executeFormatBorder(HBox hboxTop, Node grid, HBox hboxBottom) throws Exception{
+        BorderPane border = new BorderPane();
+        border.setTop(hboxTop);
+        border.setCenter(grid);
+        border.setBottom(hboxBottom);
+        return new Scene(border,500,500);
+    }
+    
+    public Pair<HBox,List<Control>> newHBox() throws FileNotFoundException {
+        List<Control> lst = format();
+        HBox hbox = new HBox();
+        hbox.setPadding(new Insets(15, 12, 15, 12));
+        hbox.setSpacing(10);
+        hbox.setStyle("-fx-background-color: #336699;");
+        hbox.getChildren().addAll(lst);
+        return new Pair<>(hbox,lst);
+    }
+
+    public Pair<GridPane,List<Control>> newGrid() throws FileNotFoundException {
+        List<Control> lst = format();
+        GridPane layoutInic = new GridPane();
+        layoutInic.setPadding(new Insets(50,10,10,35));
+        layoutInic.setVgap(8);
+        layoutInic.setHgap(10);
+        layoutInic.getChildren().addAll(lst);
+        return new Pair<>(layoutInic,lst);
+    }
+
+    public Pair<VBox,List<Control>> newVBoxScroll() throws FileNotFoundException{
+        List<Control> lst = format();
+        ScrollPane sp = new ScrollPane();
+        VBox box = new VBox();
+        VBox vCaixa = new VBox();
+        box.getChildren().add(sp);
+        vCaixa.getChildren().addAll(lst);
+        sp.setContent(vCaixa);
+        return new Pair<>(box,lst);
     }
     /**
     public Pair<Scene,List<Control>> executeFormatScroll() throws Exception {

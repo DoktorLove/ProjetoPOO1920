@@ -132,6 +132,17 @@ public abstract class Transportador extends User
         return this.classificacao.get(name);
     }
 
+    public double classMedia(){
+        double sum = 0;
+        int i = 0;
+        for(Map.Entry<String,Integer> e : this.classificacao.entrySet())
+        {
+            sum = e.getValue() + sum;
+            i += 1;
+        }
+        return sum/i;
+    }
+
     public boolean aceitoTransportMedico(){
         return this.transporte_medico;
     }

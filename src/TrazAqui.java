@@ -3,7 +3,7 @@ import com.sun.javafx.collections.MappingChange;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.io.*;
-public class TrazAqui {
+public class TrazAqui implements Serializable{
     /**
      * Gestao do map de comparadores.
      * A classe TrazAqui guarda os diferentes comparadores que as instancias
@@ -123,6 +123,10 @@ public class TrazAqui {
         return this.users.containsKey(nome);
     }
 
+    public boolean corretaPassword(String username, String password){
+        return this.users.get(username).getPassword().equals(password);
+    }
+
     public int quantos()
     {
         return this.users.size();
@@ -158,12 +162,12 @@ public class TrazAqui {
         return new Empresa(username,nome,password,posicao,raio,transport,transporte_medico,classificacao,encomendas,custo_km,custo_peso,nif);
     }
 
-    public static Loja criaLoja(String username, String nome,String password,Localizacao local,HashMap<String,List<Encomenda>> encomendas,boolean fila){
+    public static Loja criaLoja(String username, String nome,String password,Localizacao local,HashMap<String,List<Encomenda>> encomendas, HashMap<String,Integer> classificacao,boolean fila){
         if(fila == true){
-            return new LojaComFila(username,nome,password,local,encomendas,new ArrayList<Utilizador>());
+            return new LojaComFila(username,nome,password,local,encomendas,classificacao,new ArrayList<Utilizador>());
         }
         else{
-            return new LojaSemFila(username,nome,password,local,encomendas);
+            return new LojaSemFila(username,nome,password,local,encomendas,classificacao);
         }
     }
 
@@ -174,7 +178,10 @@ public class TrazAqui {
 
     public void adicionaEncomenda(Encomenda e){ this.encomendas.put(e.getCodigo(),e.clone());}
 
-    public void adicionaAceites(String s){ this.aceites.add(s);}
+    public void adicionaAceites(String s){
+        if(!this.aceites.contains(s))
+            this.aceites.add(s);
+    }
 
     public List<User> getUsersAsList()
     {
@@ -239,6 +246,36 @@ public class TrazAqui {
         }
 
         return hi;
+    }
+
+    public void importaCSV(String fich) throws FileNotFoundException,IOException
+    {
+        this.setNome(nome);
+        String[] linhaPartida;
+        List<String> linhas = TrazAqui.lerCSV(fich);
+        for(String linha: linhas){
+            linhaPartida = linha.split(":",2);
+            switch(linhaPartida[0]){
+                case "Utilizador":
+                    this.adicionaUser(TrazAqui.csv2Utilizador(linhaPartida[1]));
+                    break;
+                case "Voluntario":
+                    this.adicionaUser(TrazAqui.csv2Voluntario(linhaPartida[1]));
+                    break;
+                case "Transportadora":
+                    this.adicionaUser(TrazAqui.csv2Empresa(linhaPartida[1]));
+                    break;
+                case "Loja":
+                    this.adicionaUser(TrazAqui.csv2Loja(linhaPartida[1]));
+                    break;
+                case "Encomenda":
+                    this.adicionaEncomenda(TrazAqui.csv2Encomenda(linhaPartida[1]));
+                    break;
+                case "Aceite":
+                    this.adicionaAceites(linhaPartida[1]);
+                    break;
+            }
+        }
     }
 
     private static List<String> lerCSV(String fich) throws FileNotFoundException,IOException

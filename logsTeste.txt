@@ -1,0 +1,414 @@
+
+Username: t9
+
+Nome: TORRESTIR TRANSITÃRIOS LDA
+
+Password: N/A
+Localizacao: 
+	Latitude: -9.798416
+	Longitude: 29.869064
+
+Transporte disponivel: true
+
+Transporte médico: false
+{}
+{}
+
+Raio de trabalho: 128.0
+Custo_Km : 1.5
+Custo por peso:0.0
+Nif: 923953011
+
+
+Username: l8
+
+Nome: Punt Roma
+
+Password: N/A
+Localizacao: 
+	Latitude: 57.339508
+	Longitude: -86.066315
+Encomendas : {}
+Classificações : {}
+Fila de espera indisponivel de momento...
+
+
+Username: l58
+
+Nome: Primark
+
+Password: N/A
+Localizacao: 
+	Latitude: 78.73474
+	Longitude: 66.239685
+Encomendas : {}
+Classificações : {}
+Fila de espera indisponivel de momento...
+
+
+Username: l13
+
+Nome: LA Kids & Junior
+
+Password: N/A
+Localizacao: 
+	Latitude: -27.339592
+	Longitude: -54.781532
+Encomendas : {}
+Classificações : {}
+Fila de espera indisponivel de momento...
+
+
+Username: t51
+
+Nome: SÃBIA ATITUDE - CONSTRUÃ‡Ã•ES
+
+Password: N/A
+Localizacao: 
+	Latitude: -39.519154
+	Longitude: 8.964966
+
+Transporte disponivel: true
+
+Transporte médico: false
+{}
+{}
+
+Raio de trabalho: 167.0
+Custo_Km : 3.5
+Custo por peso:0.0
+Nif: 455159118
+
+
+Username: pedro123
+
+Nome: Pedro Silva
+
+Password: migustababy
+Localizacao: 
+	Latitude: 0.0
+	Longitude: 0.0
+Idade : 21
+Sexo : Masculino
+
+
+Username: u97
+
+Nome: Pedro Filipe Carvalho Barbosa
+
+Password: N/A
+Localizacao: 
+	Latitude: -68.78327
+	Longitude: -50.26914
+Idade : 81
+Sexo : Masculino
+
+
+Username: v73
+
+Nome: Rui Pedro Gomes Coelho
+
+Password: N/A
+Localizacao: 
+	Latitude: -45.424522
+	Longitude: -79.517136
+
+Transporte disponivel: false
+
+Transporte médico: true
+{}
+{}
+
+Raio de trabalho: 15.0
+Idade : 57
+Sexo : Feminino
+
+
+Username: t31
+
+Nome: ZENITHINDEX
+
+Password: N/A
+Localizacao: 
+	Latitude: 31.47522
+	Longitude: 76.58536
+
+Transporte disponivel: true
+
+Transporte médico: false
+{}
+{}
+
+Raio de trabalho: 192.0
+Custo_Km : 1.5
+Custo por peso:0.0
+Nif: 599618020
+
+
+Username: u33
+
+Nome: TomÃ¡s Salazar Valente
+
+Password: N/A
+Localizacao: 
+	Latitude: 98.079666
+	Longitude: -36.973225
+Idade : 79
+Sexo : Masculino
+
+
+Username: u78
+
+Nome: LuÃ­s Pedro da Silva Vila
+
+Password: N/A
+Localizacao: 
+	Latitude: 64.87256
+	Longitude: 43.373962
+Idade : 88
+Sexo : Masculino
+
+
+Username: v33
+
+Nome: SimÃ£o Pedro Santa Cruz Oliveira
+
+Password: N/A
+Localizacao: 
+	Latitude: 11.959328
+	Longitude: 95.35214
+
+Transporte disponivel: true
+
+Transporte médico: true
+{}
+{}
+
+Raio de trabalho: 81.0
+Idade : 97
+Sexo : Feminino
+
+
+Username: v59
+
+Nome: JoÃ£o Carlos Delgado Monteiro
+
+Password: N/A
+Localizacao: 
+	Latitude: 87.60193
+	Longitude: -67.35995
+
+Transporte disponivel: false
+
+Transporte médico: false
+{}
+{}
+
+Raio de trabalho: 56.0
+Idade : 39
+Sexo : Masculino
+
+
+Username: ana123
+
+Nome: Ana Lemos
+
+Password: 12345
+Localizacao: 
+	Latitude: 0.0
+	Longitude: 0.0
+Idade : 23
+Sexo : Feminino
+
+
+Username: u7
+
+Nome: Rodrigo Tiago Oliveira Ferreira
+
+Password: N/A
+Localizacao: 
+	Latitude: -14.681885
+	Longitude: 72.73595
+Idade : 73
+Sexo : Feminino
+
+
+Username: l83
+
+Nome: ColchaoNet.com
+
+Password: N/A
+Localizacao: 
+	Latitude: 95.71132
+	Longitude: -57.792557
+Encomendas : {}
+Classificações : {}
+Fila de Espera: []
+
+
+Username: u80
+
+Nome: Guilherme JoÃ£o Cerqueira da Mota Miranda
+
+Password: N/A
+Localizacao: 
+	Latitude: -18.299461
+	Longitude: -35.02321
+Idade : 81
+Sexo : Masculino
+
+
+Username: u82
+
+Nome: Hugo AndrÃ© Coelho Cardoso
+
+Password: N/A
+Localizacao: 
+	Latitude: 57.245117
+	Longitude: 19.557358
+Idade : 5
+Sexo : Masculino
+
+
+Username: u81
+
+Nome: Rui Pedro Neto Reis
+
+Password: N/A
+Localizacao: 
+	Latitude: -67.93489
+	Longitude: 99.649734
+Idade : 32
+Sexo : Masculino
+
+
+Username: u40
+
+Nome: LuÃ­s AnÃ­bal Barbosa de AraÃºjo
+
+Password: N/A
+Localizacao: 
+	Latitude: 99.15073
+	Longitude: -45.263195
+Idade : 75
+Sexo : Feminino
+
+
+Username: l29
+
+Nome: TV e TelecomunicaÃ§Ãµes
+
+Password: N/A
+Localizacao: 
+	Latitude: 39.627502
+	Longitude: 33.60112
+Encomendas : {}
+Classificações : {}
+Fila de espera indisponivel de momento...
+
+
+Username: v20
+
+Nome: JoÃ£o Pedro Gomes Coelho
+
+Password: N/A
+Localizacao: 
+	Latitude: -88.56778
+	Longitude: -1.4521866
+
+Transporte disponivel: false
+
+Transporte médico: false
+{}
+{}
+
+Raio de trabalho: 1.0
+Idade : 7
+Sexo : Feminino
+
+
+Username: u68
+
+Nome: Pedro GonÃ§alo dos Santos Pires Pinheiro
+
+Password: N/A
+Localizacao: 
+	Latitude: -71.837296
+	Longitude: -29.223396
+Idade : 57
+Sexo : Feminino
+
+
+Username: t24
+
+Nome: TORRESTIR TRANSITÃRIOS LDA
+
+Password: N/A
+Localizacao: 
+	Latitude: 74.59796
+	Longitude: 12.1732025
+
+Transporte disponivel: true
+
+Transporte médico: false
+{}
+{}
+
+Raio de trabalho: 114.0
+Custo_Km : 1.5
+Custo por peso:2.0
+Nif: 881936632
+
+
+Username: u48
+
+Nome: Francisco EgÃ­dio Coutinho Martins Correia
+
+Password: N/A
+Localizacao: 
+	Latitude: -97.28862
+	Longitude: 59.067047
+Idade : 29
+Sexo : Masculino
+
+
+Username: v69
+
+Nome: Pedro Miguel da Silva Paiva AntÃ³nio
+
+Password: N/A
+Localizacao: 
+	Latitude: -3.4494247
+	Longitude: 78.96666
+
+Transporte disponivel: false
+
+Transporte médico: false
+{}
+{}
+
+Raio de trabalho: 164.0
+Idade : 96
+Sexo : Feminino
+
+
+Username: t26
+
+Nome: TERCARGO - TRANSITÃRIOS
+
+Password: N/A
+Localizacao: 
+	Latitude: 68.8905
+	Longitude: -38.96917
+
+Transporte disponivel: true
+
+Transporte médico: false
+{}
+{}
+
+Raio de trabalho: 119.0
+Custo_Km : 0.5
+Custo por peso:2.0
+Nif: 539968772
+

@@ -13,19 +13,22 @@ import java.util.stream.Collectors;
 public abstract class Loja extends User
 {
     private Map<String,List<Encomenda>> encomendas;//encomendas prontas a ser entregues  
-    
+    private Map<String,Integer> classificacao;//classificacoes feitas pelos utilizadores
+
     //Construtor vazio
     public Loja()
     {
         super();
         this.encomendas = new HashMap<>();
+        this.classificacao = new HashMap<>();
     }
     
     //Construtor por parametros
-    public Loja(String username, String nome,String password,Localizacao local,HashMap<String,List<Encomenda>> encomendas)
+    public Loja(String username, String nome,String password,Localizacao local,HashMap<String,List<Encomenda>> encomendas, Map<String,Integer> classificacao)
     {
         super(username,nome,password,local);
         setEncomendas(encomendas);
+        setClassificacao(classificacao);
     }
     
     //Construtor copia
@@ -33,6 +36,7 @@ public abstract class Loja extends User
     {
         super(novaloja);
         setEncomendas(novaloja.getEncomendas());
+        setClassificacao(novaloja.getClassificacao());
     }
     
     //Getters
@@ -44,6 +48,14 @@ public abstract class Loja extends User
         }
         return copia;
     }
+
+    public HashMap<String, Integer> getClassificacao() {
+        HashMap<String,Integer> copia = new HashMap<>();
+        for(Map.Entry<String,Integer> edb: this.classificacao.entrySet()){
+            copia.put(edb.getKey(),edb.getValue());
+        }
+        return copia;
+    }
     
     //Setters
     public void setEncomendas(HashMap<String,List<Encomenda>> edb){
@@ -51,7 +63,23 @@ public abstract class Loja extends User
         edb.entrySet().forEach(e -> this.encomendas.put(e.getKey(),(e.getValue()).stream().map(Encomenda::clone)
                 .collect(Collectors.toList())));
     }
-    
+
+    public void setClassificacao(Map<String, Integer> classificacao) {
+        this.classificacao = new HashMap<>();
+        classificacao.entrySet().forEach(e -> this.classificacao.put(e.getKey(),e.getValue()));
+    }
+
+    public double classMedia(){
+        double sum = 0;
+        int i = 0;
+        for(Map.Entry<String,Integer> e : this.classificacao.entrySet())
+        {
+            sum = e.getValue() + sum;
+            i += 1;
+        }
+        return sum/i;
+    }
+
     //Clone
     public abstract Loja clone();
     
@@ -60,7 +88,8 @@ public abstract class Loja extends User
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
-        .append("Encomendas : ").append(this.encomendas.toString() + "\n");
+        .append("Encomendas : ").append(this.encomendas.toString() + "\n")
+        .append("Classificações : ").append(this.classificacao.toString() + "\n");
         return sb.toString();
     }
     
@@ -73,6 +102,7 @@ public abstract class Loja extends User
             return false;
             
         Loja p = (Loja) o;
-        return(super.equals(p) && this.getEncomendas().equals(p.getEncomendas()));
+        return(super.equals(p) && this.getEncomendas().equals(p.getEncomendas()))
+                && this.getClassificacao().equals(p.getClassificacao());
     }
 }

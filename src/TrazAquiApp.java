@@ -9,8 +9,11 @@ import javafx.stage.Stage;
 import javafx.util.Pair;
 
 import javax.print.DocFlavor;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,6 +91,29 @@ public class TrazAquiApp extends Application{
             {"ButtonRet","","0","20"}
     };
 
+    String[][] opcoesMenuUtilizadorTop = {
+            {"Label","Ordenar: ","0","0"},
+            {"Button","Mais populares","150","100","1","5"},
+            {"Button","Classificação","150","100","1","5"},
+            {"Button","Tempo de entrega","150","100","1","5"},
+    };
+
+    String[][] opcoesMenuUtilizadorCenter = {
+            {"Label","Ordenar: ","0","0"},
+            {"Label","Ordenar: ","0","0"},
+            {"Label","Ordenar: ","0","0"},
+            {"Label","Ordenar: ","0","0"},
+            {"Label","Ordenar: ","0","0"},
+    };
+
+    String[][] opcoesMenuUtilizadorBottom = {
+            {"Button","Inicio","150","100","1","5"},
+            {"Button","Procurar","150","100","1","5"},
+            {"Button","Pedidos","150","100","1","5"},
+            {"Button","Perfil","150","100","1","5"},
+            {"ButtonRet","","0","20"},
+    };
+
 
     private TrazAqui logNegocio;
 
@@ -97,6 +123,9 @@ public class TrazAquiApp extends Application{
     private final Menu menuDifUsers = new Menu(opcoesDifUsers);
     private final Menu menuSignInLoja = new Menu(opcoesSignInLoja);
     private final Menu menuSignInEmpresa = new Menu(opcoesSignInEmpresa);
+    private final Menu menuUtilizadorTop = new Menu(opcoesMenuUtilizadorTop);
+    private final Menu menuUtilizadorBottom = new Menu(opcoesMenuUtilizadorBottom);
+    private final Menu menuUtilizadorCenter = new Menu(opcoesMenuUtilizadorCenter);
 
     public static void main(String args[]){
         launch(args);
@@ -105,7 +134,7 @@ public class TrazAquiApp extends Application{
     /**
 
      try{
-        this.logNegocio = TrazAqui.carregaEstado("estado.obj");
+        this.logNegocio = TrazAqui.carregaEstado();
     }
     catch (FileNotFoundException e) {
         System.out.println("Parece que é a primeira utilização...");
@@ -149,6 +178,31 @@ public class TrazAquiApp extends Application{
      */
 
     private void run(Stage stage) throws Exception {
+        Path path = Files.createTempFile("estado", ".obj");
+        if(Files.notExists(path)) {
+            //System.out.println("OLa");
+            this.logNegocio = TrazAqui.importaCSV("TrazAquiApp", "/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/LogsGerados.csv");
+        }
+        else{
+            //System.out.println("Ola");
+            try{
+                this.logNegocio = TrazAqui.carregaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
+                this.logNegocio.importaCSV("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/LogsGerados.csv");
+                //System.out.println(this.logNegocio.toString());
+            }
+            catch (FileNotFoundException e) {
+                System.out.println("Parece que é a primeira utilização...");
+                this.logNegocio = new TrazAqui();
+            }
+            catch (IOException e) {
+                System.out.println("Ops! Erro de leitura!");
+                this.logNegocio = new TrazAqui();
+            }
+            catch (ClassNotFoundException e) {
+                System.out.println("Ops! Formato de ficheiro de dados errado!");
+                this.logNegocio = new TrazAqui();
+            }
+        }
         Pair<Scene,List<Control>> p = this.menuInit.executeFormatGrid();
         Scene init = p.getKey();
         stage.setScene(init);
@@ -168,6 +222,19 @@ public class TrazAquiApp extends Application{
                 ex.printStackTrace();
             }
         });
+        l.get(l.size()-1).setOnMousePressed(e->{
+            try {
+                this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            try {
+                this.logNegocio.escreveEmFicheiroTxt("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/logsTeste.txt");
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+            stage.close();
+        });
 
     }
 
@@ -176,6 +243,19 @@ public class TrazAquiApp extends Application{
         Scene logIn = p.getKey();
         stage.setScene(logIn);
         List<Control> l = p.getValue();
+
+        l.get(l.size()-2).setOnMousePressed(e->{
+            if(logInVerifica(l)){
+                try {
+                    menuUilizador(stage,logIn);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+            else{
+                stage.setScene(logIn);
+            }
+        });
 
         l.get(l.size()-1).setOnMousePressed(e->{
             stage.setScene(scene);
@@ -226,7 +306,9 @@ public class TrazAquiApp extends Application{
 
         l.get(l.size()-2).setOnMousePressed(e-> {
             try {
-                signInUtilizador(stage,signIn,l);
+                signInUtilizador(l);
+                menuUilizador(stage,signIn);
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
@@ -275,7 +357,40 @@ public class TrazAquiApp extends Application{
         });
     }
 
-    private void signInUtilizador(Stage stage, Scene scene,List<Control> l) throws Exception {
+    public void menuUilizador(Stage stage, Scene scene) throws Exception {
+        Pair<HBox,List<Control>> p1 = this.menuUtilizadorTop.newHBox();
+        Pair<VBox,List<Control>> p2 = this.menuUtilizadorCenter.newVBoxScroll();
+        Pair<HBox,List<Control>> p3 = this.menuUtilizadorBottom.newHBox();
+        Scene border = Menu.executeFormatBorder(p1.getKey(),p2.getKey(),p3.getKey());
+        stage.setScene(border);
+        List<Control> l = p3.getValue();
+        l.get(l.size()-1).setOnMousePressed(e->{
+            try {
+                this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            stage.close();
+        });
+    }
+
+    private boolean logInVerifica(List<Control> l){
+        String username = ((TextField)l.get(1)).getText();
+        String password = ((TextField)l.get(3)).getText();
+        if(logNegocio.existeUser(username)){
+            if((logNegocio.corretaPassword(username, password))){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
+
+    private void signInUtilizador(List<Control> l) throws Exception {
         String username = ((TextField)l.get(1)).getText();
         String nome = ((TextField)l.get(3)).getText();
         String password = ((TextField)l.get(5)).getText();
@@ -287,24 +402,27 @@ public class TrazAquiApp extends Application{
         if((((CheckBox) l.get(9)).isSelected())){
             sexo = "Feminino";
         }
-        logNegocio = TrazAqui.importaCSV("TrazAquiApp","/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/LogsGerados.csv");
-        logNegocio.adicionaUser(logNegocio.criaUtilizador(username,nome,password,logNegocio.criaLocalizacao(0.0,0.0),idade,sexo));
-
-        ScrollPane sp = new ScrollPane();
-        VBox box = new VBox();
-        VBox vCaixa = new VBox();
-        Scene cena = new Scene(box,300,300);
-        stage.setScene(cena);
-        box.getChildren().add(sp);
-        String s = logNegocio.toString();
-        System.out.println(s);
-        Label la = new Label(s);
-        vCaixa.getChildren().add(la);
-        sp.setContent(vCaixa);
-
+        logNegocio.adicionaUser(TrazAqui.criaUtilizador(username,nome,password, TrazAqui.criaLocalizacao(0.0,0.0),idade,sexo));
+        this.logNegocio.guardaEstado("estado.obj");
     }
 
     /**
+     *
+     *
+     *         logNegocio = TrazAqui.importaCSV("TrazAquiApp","/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/LogsGerados.csv");
+     *
+     *         ScrollPane sp = new ScrollPane();
+     *         VBox box = new VBox();
+     *         VBox vCaixa = new VBox();
+     *         Scene cena = new Scene(box,300,300);
+     *         stage.setScene(cena);
+     *         box.getChildren().add(sp);
+     *         String s = logNegocio.toString();
+     *         System.out.println(s);
+     *         Label la = new Label(s);
+     *         vCaixa.getChildren().add(la);
+     *         sp.setContent(vCaixa);
+     *
      * escrever e manipular input de choice box's
      * @Override
      *     public void start(Stage primaryStage) throws Exception {

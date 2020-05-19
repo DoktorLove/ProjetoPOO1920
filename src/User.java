@@ -1,3 +1,4 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 /**
  *Classe abstrata dos Utilizadores
@@ -5,7 +6,7 @@ import java.time.LocalDate;
  * @author Rui
  * @version 06/04/2020
  */
-public abstract class User
+public abstract class User implements Serializable
 {
     private String username; //nome de utilizador para aceder a aplicacao
     private String nome; //nome do utilizador

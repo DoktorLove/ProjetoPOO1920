@@ -2,7 +2,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.stream.Collectors;
-
+import java.lang.Math;
 /**
  * SuperClasse das classes transportadoras
  * 
@@ -21,6 +21,7 @@ public abstract class Transportador extends User
     //Construtor por omissao
     public Transportador()
     {
+        super();
         this.transporte = true;
         this.transporte_medico = false;
         this.classificacao = new HashMap<>();
@@ -150,6 +151,27 @@ public abstract class Transportador extends User
     public void aceitaMedicamentos(boolean med){
         this.transporte_medico = med;
     }
+    
+    //Metodo que determina a distancia a que este transportador está de uma localização
+    public double distanciaA(Localizacao local)
+    {
+        double this_x = this.getPosicao().getLatitude();
+        double this_y = this.getPosicao().getLongitude();
+        double x = local.getLatitude();
+        double y = local.getLongitude();
+        double r = Math.sqrt(Math.pow(x - this_x,2) + Math.pow(y - this_y,2));
+        return r;
+    }
+    
+    //Metodo que indica se uma encomenda está dentro do raio de ação deste transportador
+    public boolean dentroRaio(Localizacao local)
+    {
+        double distancia = distanciaA(local);
+        if (this.raio > distancia)
+            return true;
+        return false;
+    }
+    
 
     public String toString(){
         StringBuilder sb = new StringBuilder();

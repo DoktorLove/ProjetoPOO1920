@@ -1,5 +1,7 @@
 import com.sun.javafx.collections.MappingChange;
+import javafx.print.Collation;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.io.*;
@@ -139,6 +141,36 @@ public class TrazAqui implements Serializable{
         return this.users.size();
     }
 
+    public boolean temFila(String username) throws UserInexistenteException {
+        if(!this.users.containsKey(username)){
+            throw new UserInexistenteException("Loja não existe!");
+        }
+        else{
+            User u = this.users.get(username);
+            return u instanceof LojaComFila;
+        }
+    }
+
+    public Encomenda getEncomenda(String username) throws EncomendaInexistenteException {
+        Encomenda e;
+        if(!encomendas.containsKey(username))
+        {
+            throw new EncomendaInexistenteException("A encomenda não existe");
+        }
+        e = encomendas.get(username).clone();
+        return e;
+    }
+
+    public void adicionaEncFila(String username) throws EncomendaInexistenteException {
+        String cd = Collections.max(this.getEncomendas().keySet());
+        ((LojaComFila) this.users.get(username)).addEncFila(this.getEncomenda(cd));
+    }
+
+    public void adicionaEncLoja(String username) throws EncomendaInexistenteException {
+        String cd = Collections.max(this.getEncomendas().keySet());
+        ((LojaSemFila) this.users.get(username)).addEncomenda(this.getEncomenda(cd));
+    }
+
     public User getUser(String nome) throws UserInexistenteException
     {
         User h;
@@ -149,6 +181,7 @@ public class TrazAqui implements Serializable{
         h = users.get(nome).clone();
         return h;
     }
+
 
     public static Localizacao criaLocalizacao(double x, double y){
         return new Localizacao(x,y);
@@ -172,11 +205,32 @@ public class TrazAqui implements Serializable{
     public static Loja criaLoja(String username, String nome,String password,Localizacao local,HashMap<String,Encomenda> encomendas,
                                 HashMap<String,Integer> classificacao,boolean fila,int tamanho){
         if(fila == true){
-            return new LojaComFila(username,nome,password,local,encomendas,classificacao,new ArrayList<Utilizador>(),tamanho);
+            return new LojaComFila(username,nome,password,local,encomendas,classificacao,new ArrayList<>(),tamanho);
         }
         else{
             return new LojaSemFila(username,nome,password,local,encomendas,classificacao);
         }
+    }
+
+    public Encomenda criaEncomenda(String codigo, String utilizador, String loja, String transportador, LocalDateTime ldt, double peso, String[][] produtos, int ind,boolean medica, boolean entregue){
+        String cd = Collections.max(this.getEncomendas().keySet());
+        codigo = "e" + (Integer.parseInt(cd.substring(1,cd.length()))+1) ;
+        int i = 0;
+        List<LinhaEncomenda> lst = new ArrayList<>();
+        while(i < ind){
+            lst.add(criaLinhaEncomenda(produtos[i][0],produtos[i][1],Double.parseDouble(produtos[i][2]),Integer.parseInt(produtos[i][3])).clone());
+            i += 1;
+        }
+        return new Encomenda(codigo,utilizador,loja,transportador,ldt,peso,lst,medica,entregue);
+    }
+
+    public String maiorEncomenda(){
+        String cd = Collections.max(this.getEncomendas().keySet());
+        return cd;
+    }
+
+    public LinhaEncomenda criaLinhaEncomenda(String ref, String descricao, double preco, int quantidade){
+        return new LinhaEncomenda(ref,descricao,preco,quantidade);
     }
 
     public void adicionaUser(User h)
@@ -197,6 +251,32 @@ public class TrazAqui implements Serializable{
             .stream()
             .map(User::clone)
             .collect(Collectors.toList());
+    }
+
+    public List<Loja> listOfLojas(){
+        List<Loja> l = new ArrayList<>();
+        for(User u: this.getUsersAsList()) {
+            if(u instanceof Loja) {
+                l.add(((Loja) u).clone());
+            }
+        }
+        return l;
+    }
+
+    public List<String> listOfLojasInfo(){
+        List<Loja> lst = this.listOfLojas();
+        List<String> end = new ArrayList<>();
+        for(Loja l: lst){
+            String s = "";
+            if(l instanceof LojaSemFila) {
+                s = "Username: " + l.getUsername() + "\n"+ "Nome: " + l.getNome() + "\n" + "Classificações: " + l.getClassificacao().toString() + "\n" + l.getPosicao() .toString()+ "\n";
+            }
+            else{
+                s = "Username: " + l.getUsername() + "\n" + "Nome: " + l.getNome() + "\n" + "Classificações: " + l.getClassificacao() + "\n" + l.getPosicao() + "\n" + "Esta loja tem fila com " + (((LojaComFila) l).getTamanho() - ((LojaComFila) l).getFila().size()) + " vagas" + "\n";
+            }
+            end.add(s);
+        }
+        return end;
     }
 
     public String toString(){
@@ -380,6 +460,7 @@ public class TrazAqui implements Serializable{
         l.setLatitude(gpsx);
         l.setLongitude(gpsy);
         boolean booleanFila = r.nextBoolean();
+        int tam = 1 + r.nextInt(20);
         if(booleanFila){
             LojaSemFila ls = new LojaSemFila();
             ls.setUsername(username);
@@ -392,6 +473,7 @@ public class TrazAqui implements Serializable{
             lf.setUsername(username);
             lf.setNome(nome);
             lf.setPosicao(l);
+            lf.setTamanho(tam);
             return lf;
         }
     }
@@ -438,7 +520,7 @@ public class TrazAqui implements Serializable{
     public void guardaEstado(String nomeFicheiro) throws FileNotFoundException,IOException {
         FileOutputStream fos = new FileOutputStream(nomeFicheiro);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(this); //guarda-se todo o objecto de uma só vez
+        oos.writeObject(this);
         oos.flush();
         oos.close();
     }

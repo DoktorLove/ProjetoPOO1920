@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public class LojaComFila extends Loja
 {
-    private List<Utilizador> fila_espera;//fila de espera
+    private List<Encomenda> fila_espera;//fila de espera
     private int tamanho;
     
     //Construtor vazio
@@ -25,7 +25,7 @@ public class LojaComFila extends Loja
     
     //Construtor por parametros
     public LojaComFila(String username, String nome, String password,Localizacao local,
-    HashMap<String,Encomenda> encomendas, HashMap<String,Integer> classificacao,List<Utilizador> fila_espera, int tamanho)
+    HashMap<String,Encomenda> encomendas, HashMap<String,Integer> classificacao,List<Encomenda> fila_espera, int tamanho)
     {
         super(username,nome,password,local,encomendas,classificacao);
         this.setFila(fila_espera);
@@ -41,9 +41,9 @@ public class LojaComFila extends Loja
     }
     
     //Getters
-    public List<Utilizador> getFila()
+    public List<Encomenda> getFila()
     {
-        List<Utilizador> res = new ArrayList<>();
+        List<Encomenda> res = new ArrayList<>();
         this.fila_espera.stream()
             .forEach(e -> res.add(e.clone()));
         return res;
@@ -54,17 +54,21 @@ public class LojaComFila extends Loja
     }
 
     //Setters
-    public void setFila(List<Utilizador> fil)
+    public void setFila(List<Encomenda> fil)
     {
         this.fila_espera = new ArrayList<>();
-        for(Utilizador u : fil)
+        for(Encomenda e : fil)
         {
-            this.fila_espera.add(u.clone());
+            this.fila_espera.add(e.clone());
         }
     }
 
     public void setTamanho(int tamanho) {
         this.tamanho = tamanho;
+    }
+
+    public void addEncFila(Encomenda e){
+        this.fila_espera.add(e.clone());
     }
 
     //Metodo toString

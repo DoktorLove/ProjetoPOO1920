@@ -8,6 +8,7 @@ public class Encomenda implements Serializable {
     private String codigo;
     private String utilizador;
     private String loja;
+    private String transportador;
     private LocalDateTime hora;
     private double peso;
     private List<LinhaEncomenda> produtos;
@@ -18,6 +19,7 @@ public class Encomenda implements Serializable {
         this.codigo = "N/A";
         this.utilizador = "N/A";
         this.loja = "N/A";
+        this.transportador = "N/A";
         this.hora = LocalDateTime.now();
         this.peso = 0.0;
         this.produtos = new ArrayList<>();
@@ -25,11 +27,12 @@ public class Encomenda implements Serializable {
         this.entregue = false;
     }
 
-    public Encomenda(String codigo,String utilizador, String loja, LocalDateTime hora,
+    public Encomenda(String codigo,String utilizador, String loja,String transportador ,LocalDateTime hora,
                      double peso, List<LinhaEncomenda> produtos, boolean medica, boolean entregue){
         this.codigo = codigo;
         this.utilizador = utilizador;
         this.loja = loja;
+        this.transportador = transportador;
         this.hora = hora;
         this.peso = peso;
         setProdutos(produtos);
@@ -41,6 +44,7 @@ public class Encomenda implements Serializable {
         this.codigo = e.getCodigo();
         this.utilizador = e.getUtilizador();
         this.loja = e.getLoja();
+        this.transportador = e.getTransportador();
         this.hora = e.getHora();
         this.peso = e.getPeso();
         setProdutos(e.getProdutos());
@@ -58,6 +62,10 @@ public class Encomenda implements Serializable {
 
     public String getLoja() {
         return this.loja;
+    }
+
+    public String getTransportador() {
+        return this.transportador;
     }
 
     public LocalDateTime getHora() {
@@ -92,6 +100,10 @@ public class Encomenda implements Serializable {
 
     public void setLoja(String loja) {
         this.loja = loja;
+    }
+
+    public void setTransportador(String transportador) {
+        this.transportador = transportador;
     }
 
     public void setHora(LocalDateTime hora) {
@@ -140,6 +152,7 @@ public class Encomenda implements Serializable {
         sb.append("\nCodigo: ").append(this.codigo + "\n")
                 .append("\nUtilizador: ").append(this.utilizador + "\n")
                 .append("Loja: ").append(this.loja + "\n")
+                .append("Transportador: ").append(this.transportador + "\n")
                 .append("Hora: ").append(this.hora + "\n")
                 .append("Peso : ").append(this.peso + "\n")
                 .append("Produtos: ").append(this.produtos + "\n")
@@ -155,6 +168,7 @@ public class Encomenda implements Serializable {
         return this.getCodigo().equals(e.getCodigo()) &&
                 this.getUtilizador().equals(e.getUtilizador()) &&
                 this.getLoja().equals(e.getLoja()) &&
+                this.getTransportador().equals(e.getTransportador()) &&
                 this.getHora().equals(e.getHora()) &&
                 this.getPeso() == e.getPeso() &&
                 this.getProdutos().equals(e.getProdutos()) &&

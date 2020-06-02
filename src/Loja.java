@@ -67,6 +67,10 @@ public abstract class Loja extends User
         classificacao.entrySet().forEach(e -> this.classificacao.put(e.getKey(),e.getValue()));
     }
 
+    public void addEncomenda(Encomenda e){
+        this.encomendas.put(e.getCodigo(),e.clone());
+    }
+
     public double classMedia(){
         double sum = 0;
         int i = 0;

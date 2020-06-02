@@ -26,7 +26,7 @@ public class Empresa extends Transportador
     //Construtor por parametros
     public Empresa(String username, String nome, String password,Localizacao posicao,double raio,
                    boolean transport, boolean transporte_medico,
-                   Map<String,Integer> classificacao, HashMap<String, List<Encomenda>> encomendas,
+                   Map<String,Integer> classificacao, HashMap<String,Encomenda> encomendas,
                    double custo_km, double custo_peso, String nif)
     {
         super(username,nome,password,posicao,raio, transport,transporte_medico,classificacao,encomendas);

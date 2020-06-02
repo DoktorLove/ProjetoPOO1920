@@ -13,20 +13,23 @@ import java.util.stream.Collectors;
 public class LojaComFila extends Loja
 {
     private List<Utilizador> fila_espera;//fila de espera
+    private int tamanho;
     
     //Construtor vazio
     public LojaComFila()
     {
         super();
         this.fila_espera = new ArrayList<>();
+        this.tamanho = 0;
     }
     
     //Construtor por parametros
     public LojaComFila(String username, String nome, String password,Localizacao local,
-    HashMap<String,List<Encomenda>> encomendas, HashMap<String,Integer> classificacao,List<Utilizador> fila_espera)
+    HashMap<String,Encomenda> encomendas, HashMap<String,Integer> classificacao,List<Utilizador> fila_espera, int tamanho)
     {
         super(username,nome,password,local,encomendas,classificacao);
         this.setFila(fila_espera);
+        this.setTamanho(tamanho);
     }
     
     //Construtor por copia
@@ -34,6 +37,7 @@ public class LojaComFila extends Loja
     {
         super(loj);
         this.setFila(loj.getFila());
+        this.setTamanho(loj.getTamanho());
     }
     
     //Getters
@@ -44,7 +48,11 @@ public class LojaComFila extends Loja
             .forEach(e -> res.add(e.clone()));
         return res;
     }
-    
+
+    public int getTamanho() {
+        return this.tamanho;
+    }
+
     //Setters
     public void setFila(List<Utilizador> fil)
     {
@@ -54,13 +62,18 @@ public class LojaComFila extends Loja
             this.fila_espera.add(u.clone());
         }
     }
-    
+
+    public void setTamanho(int tamanho) {
+        this.tamanho = tamanho;
+    }
+
     //Metodo toString
     public String toString()
     {
         StringBuilder sb = new StringBuilder();
         sb.append(super.toString())
-        .append("Fila de Espera: ").append(this.fila_espera.toString() + "\n");
+        .append("Fila de Espera: ").append(this.fila_espera.toString() + "\n")
+        .append("Tamanho da fila: ").append(this.tamanho + "\n");
         return sb.toString();
     }
     
@@ -74,7 +87,8 @@ public class LojaComFila extends Loja
             
         LojaComFila p = (LojaComFila) o;
         return(super.equals(p) &&
-            this.fila_espera.equals(p.getFila()));
+            this.fila_espera.equals(p.getFila())
+            && this.tamanho == p.getTamanho());
     }
     
     //Clone

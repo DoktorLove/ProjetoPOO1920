@@ -15,7 +15,7 @@ public abstract class Transportador extends User
     private boolean transporte;//Sinalizar disponibilidade para transporte
     private boolean transporte_medico; // aceitacao ou nao de transporte de produtos medicos
     private Map<String,Integer> classificacao;//classificacoes feitas pelos utilizadores
-    private Map<String,List<Encomenda>> encomendas;//map que mostra as encomendas a ser transportadas
+    private Map<String,Encomenda> encomendas;//map que mostra as encomendas a ser transportadas
     private double raio; //representa a raio no qual a transportadora pode trabalhar
     
     //Construtor por omissao
@@ -31,7 +31,7 @@ public abstract class Transportador extends User
     
     //Construtor por parametros
     public Transportador(String username,String nome, String password,Localizacao posicao,double raio,
-    boolean tp, boolean tp_medico, Map<String,Integer> clas, HashMap<String,List<Encomenda>> encomendas)
+    boolean tp, boolean tp_medico, Map<String,Integer> clas, HashMap<String,Encomenda> encomendas)
     {
         super(username, nome, password,posicao);
         this.transporte = tp;
@@ -68,11 +68,10 @@ public abstract class Transportador extends User
         return ret;
     }
 
-    public HashMap<String, List<Encomenda>> getEncomendas() {
-        HashMap<String,List<Encomenda>> copia = new HashMap<>();
-        for(Map.Entry<String,List<Encomenda>> edb: this.encomendas.entrySet()){
-            copia.put(edb.getKey(),(edb.getValue()).stream().map(Encomenda::clone)
-                    .collect(Collectors.toList()));
+    public HashMap<String, Encomenda> getEncomendas() {
+        HashMap<String,Encomenda> copia = new HashMap<>();
+        for(Map.Entry<String,Encomenda> edb: this.encomendas.entrySet()){
+            copia.put(edb.getKey(),(edb.getValue()).clone());
         }
         return copia;
     }
@@ -99,10 +98,9 @@ public abstract class Transportador extends User
         clas.entrySet().forEach(e -> this.classificacao.put(e.getKey(), e.getValue()));
     }
 
-    public void setEncomendas(HashMap<String,List<Encomenda>> edb){
+    public void setEncomendas(HashMap<String,Encomenda> edb){
         this.encomendas = new HashMap<>();
-        edb.entrySet().forEach(e -> this.encomendas.put(e.getKey(),(e.getValue()).stream().map(Encomenda::clone)
-                .collect(Collectors.toList())));
+        edb.entrySet().forEach(e -> this.encomendas.put(e.getKey(),(e.getValue()).clone()));
     }
     
     public void setTransporte(boolean tp)

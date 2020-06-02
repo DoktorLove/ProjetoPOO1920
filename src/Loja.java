@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  */
 public abstract class Loja extends User
 {
-    private Map<String,List<Encomenda>> encomendas;//encomendas prontas a ser entregues  
+    private Map<String,Encomenda> encomendas;//encomendas prontas a ser entregues
     private Map<String,Integer> classificacao;//classificacoes feitas pelos utilizadores
 
     //Construtor vazio
@@ -24,7 +24,7 @@ public abstract class Loja extends User
     }
     
     //Construtor por parametros
-    public Loja(String username, String nome,String password,Localizacao local,HashMap<String,List<Encomenda>> encomendas, Map<String,Integer> classificacao)
+    public Loja(String username, String nome,String password,Localizacao local,HashMap<String,Encomenda> encomendas, Map<String,Integer> classificacao)
     {
         super(username,nome,password,local);
         setEncomendas(encomendas);
@@ -40,11 +40,10 @@ public abstract class Loja extends User
     }
     
     //Getters
-    public HashMap<String, List<Encomenda>> getEncomendas() {
-        HashMap<String,List<Encomenda>> copia = new HashMap<>();
-        for(Map.Entry<String,List<Encomenda>> edb: this.encomendas.entrySet()){
-            copia.put(edb.getKey(),(edb.getValue()).stream().map(Encomenda::clone)
-                    .collect(Collectors.toList()));
+    public HashMap<String, Encomenda> getEncomendas() {
+        HashMap<String,Encomenda> copia = new HashMap<>();
+        for(Map.Entry<String,Encomenda> edb: this.encomendas.entrySet()){
+            copia.put(edb.getKey(),edb.getValue().clone());
         }
         return copia;
     }
@@ -58,10 +57,9 @@ public abstract class Loja extends User
     }
     
     //Setters
-    public void setEncomendas(HashMap<String,List<Encomenda>> edb){
+    public void setEncomendas(HashMap<String,Encomenda> edb){
         this.encomendas = new HashMap<>();
-        edb.entrySet().forEach(e -> this.encomendas.put(e.getKey(),(e.getValue()).stream().map(Encomenda::clone)
-                .collect(Collectors.toList())));
+        edb.entrySet().forEach(e -> this.encomendas.put(e.getKey(),(e.getValue()).clone()));
     }
 
     public void setClassificacao(Map<String, Integer> classificacao) {

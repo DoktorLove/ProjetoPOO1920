@@ -118,9 +118,16 @@ public class TrazAqui implements Serializable{
         this.aceites = new ArrayList<>(aceites);
     }
 
-    public boolean existeUser(String nome)
-    {
-        return this.users.containsKey(nome);
+    public void existeUser(String nome, String password) throws UserInexistenteException {
+        if(!this.users.containsKey(nome) || !corretaPassword(nome,password)) {
+            throw new UserInexistenteException("Username ou password errados");
+        }
+    }
+
+    public void existeUsername(String username) throws UserInexistenteException {
+        if(this.users.containsKey(username)){
+            throw new UserInexistenteException("Username já existe!");
+        }
     }
 
     public boolean corretaPassword(String username, String password){
@@ -152,19 +159,20 @@ public class TrazAqui implements Serializable{
     }
 
     public static Voluntario criaVoluntario(String username, String nome, String password,Localizacao posicao,double raio,
-                                     boolean transport, boolean transporte_medico, Map<String,Integer> classificacao, HashMap<String, List<Encomenda>> encomendas, int idade, String sexo){
+                                     boolean transport, boolean transporte_medico, Map<String,Integer> classificacao, HashMap<String,Encomenda> encomendas, int idade, String sexo){
         return new Voluntario(username,nome,password,posicao,raio,transport,transporte_medico,classificacao,encomendas,idade,sexo);
     }
     public static Empresa criaEmpresa(String username, String nome, String password,Localizacao posicao,double raio,
                                   boolean transport, boolean transporte_medico,
-                                  Map<String,Integer> classificacao, HashMap<String, List<Encomenda>> encomendas,
+                                  Map<String,Integer> classificacao, HashMap<String,Encomenda> encomendas,
                                   double custo_km, double custo_peso, String nif){
         return new Empresa(username,nome,password,posicao,raio,transport,transporte_medico,classificacao,encomendas,custo_km,custo_peso,nif);
     }
 
-    public static Loja criaLoja(String username, String nome,String password,Localizacao local,HashMap<String,List<Encomenda>> encomendas, HashMap<String,Integer> classificacao,boolean fila){
+    public static Loja criaLoja(String username, String nome,String password,Localizacao local,HashMap<String,Encomenda> encomendas,
+                                HashMap<String,Integer> classificacao,boolean fila,int tamanho){
         if(fila == true){
-            return new LojaComFila(username,nome,password,local,encomendas,classificacao,new ArrayList<Utilizador>());
+            return new LojaComFila(username,nome,password,local,encomendas,classificacao,new ArrayList<Utilizador>(),tamanho);
         }
         else{
             return new LojaSemFila(username,nome,password,local,encomendas,classificacao);

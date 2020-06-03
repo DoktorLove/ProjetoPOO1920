@@ -219,9 +219,22 @@ public class TrazAqui implements Serializable{
         }
     }
 
-    public Encomenda criaEncomenda(String codigo, String utilizador, String loja, String transportador, LocalDateTime ldt, double peso, String[][] produtos, int ind,boolean medica, boolean entregue){
+    public boolean contemLoja(String username){
+        if (this.users.containsKey(username)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public String geraCodEncomenda(){
         String cd = Collections.max(this.getEncomendas().keySet());
-        codigo = "e" + (Integer.parseInt(cd.substring(1,cd.length()))+1) ;
+        String codigo = "e" + (Integer.parseInt(cd.substring(1,cd.length()))+1);
+        return codigo;
+    }
+
+    public Encomenda criaEncomenda(String codigo, String utilizador, String loja, String transportador, LocalDateTime ldt, double peso, String[][] produtos, int ind,boolean medica, boolean entregue){
         int i = 0;
         List<LinhaEncomenda> lst = new ArrayList<>();
         while(i < ind){
@@ -287,8 +300,8 @@ public class TrazAqui implements Serializable{
         for(Encomenda e: this.getEncomendas().values()) {
             Localizacao l1 = this.users.get(e.getUtilizador()).getPosicao();
             Localizacao l2 = this.users.get(e.getLoja()).getPosicao();
-            if(t.dentroRaio(l1) && t.dentroRaio(l2) && !(!t.getTransporteMedico() && e.getMedica()) && e.getTransportador().equals("")) {
-                System.out.println(t.dentroRaio(l1) + ";" + t.dentroRaio(l2) + ";" + !(!t.getTransporteMedico() && e.getMedica()) + " " + e.getTransportador().equals(""));
+            if(t.dentroRaio(l1) && t.dentroRaio(l2) && !(!t.getTransporteMedico() && e.getMedica()) && e.getTransportador().equals("") && ((Loja) this.users.get(e.getLoja())).getEncomendas().containsKey(e.getCodigo())) {
+                //System.out.println(t.dentroRaio(l1) + ";" + t.dentroRaio(l2) + ";" + !(!t.getTransporteMedico() && e.getMedica()) + " " + e.getTransportador().equals(""));
                 l.add(e.clone());
             }
         }

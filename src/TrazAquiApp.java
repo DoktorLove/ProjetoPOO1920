@@ -68,6 +68,7 @@ public class TrazAquiApp{
         this.menuEstatisticas = new Menu(opcoesEstatisticas);
         try {
             this.logNegocio = TrazAqui.carregaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
+            System.out.println(this.logNegocio.toString());
         }
         catch (FileNotFoundException e) {
             System.out.println("Parece que é a primeira utilização, vamos importar informação do ficheiro de logs.");
@@ -119,7 +120,15 @@ public class TrazAquiApp{
         String password = scin.nextLine();
         try {
             this.logNegocio.existeUser(username,password);
-            menuDeUtil(username);
+            if(username.charAt(0) == 'u') {
+                menuDeUtil(username);
+            }
+            if(username.charAt(0) == 'v' || username.charAt(0) == 't') {
+                menuDeTransportador(username);
+            }
+            if(username.charAt(0) == 'l') {
+                menuDeLoja(username);
+            }
         }
         catch (UserInexistenteException | IOException | EncomendaInexistenteException e) {
             System.out.println(e.getMessage());
@@ -290,10 +299,13 @@ public class TrazAquiApp{
                     menuDeTransportador(vusername);
                     break;
                 case 3:
+                    //Encomendas por entregar(ver pedidos de transporte)
                     break;
                 case 4:
+                    //historico de encomendas
                     break;
                 case 5:
+                    //estatisticas
                     break;
             }
         } while (menuUtil.getOpcao()!=0);
@@ -308,10 +320,13 @@ public class TrazAquiApp{
                     encomendasDisponiveis(username);
                     break;
                 case 2:
+                    //confirmar entrega de encomenda
                     break;
                 case 3:
+                    //historico de encomendas
                     break;
                 case 4:
+                    //procurar utilizadores
                     break;
             }
         } while (menuTransportadora.getOpcao()!=0);
@@ -333,10 +348,13 @@ public class TrazAquiApp{
                     this.logNegocio.realizaEncomenda(cod,username);
                     break;
                 case 2:
+                    //ordenar por distancia
                     break;
                 case 3:
+                    // ordenar por tempo do pedido
                     break;
                 case 4:
+                    //filtrar encomendas medicas
                     break;
             }
         } while (menuEncomendaPorEntregar.getOpcao()!=0);
@@ -356,49 +374,54 @@ public class TrazAquiApp{
                 case 1:
                     System.out.println("Username da loja: ");
                     String nloja = scin.nextLine();
-                    String[][] matrix = new String[50][41];
-                    String ex = "s";
-                    int ind = 0;
-                    while(ex.equals("s")) {
-                        System.out.println("Referencia: ");
-                        String ref = scin.nextLine();
-                        matrix[ind][0] = ref;
-                        System.out.println("Descrição do produto: ");
-                        String desc = scin.nextLine();
-                        matrix[ind][1] = desc;
-                        System.out.println("Preço: ");
-                        String preco = scin.nextLine();
-                        matrix[ind][2] = preco;
-                        System.out.println("Quantidade: ");
-                        String quant = scin.nextLine();
-                        matrix[ind][3] = quant;
-                        System.out.println("Deseja juntar outro produto[s/n]");
-                        ex = scin.nextLine();
-                        ind += 1;
-                    }
-                    System.out.println("É transporte médico?[s/n]: ");
-                    String medica = scin.nextLine();
-                    if(medica.equals("s")) {
-                        this.logNegocio.adicionaEncomenda(this.logNegocio.criaEncomenda("", username, nloja, "", LocalDateTime.now(), 0.0, matrix, ind, true, false));
-                    }
-                    else{
-                        if(medica.equals("n")) {
-                            this.logNegocio.adicionaEncomenda(this.logNegocio.criaEncomenda("", username, nloja, "", LocalDateTime.now(), 0.0, matrix, ind, false, false));
+                    if(this.logNegocio.contemLoja(nloja)){
+                        String[][] matrix = new String[50][4];
+                        String ex = "s";
+                        int ind = 0;
+                        while(ex.equals("s")) {
+                            System.out.println("Referencia: ");
+                            String ref = scin.nextLine();
+                            matrix[ind][0] = ref;
+                            System.out.println("Descrição do produto: ");
+                            String desc = scin.nextLine();
+                            matrix[ind][1] = desc;
+                            System.out.println("Preço: ");
+                            String preco = scin.nextLine();
+                            matrix[ind][2] = preco;
+                            System.out.println("Quantidade: ");
+                            String quant = scin.nextLine();
+                            matrix[ind][3] = quant;
+                            System.out.println("Deseja juntar outro produto[s/n]");
+                            ex = scin.nextLine();
+                            ind += 1;
+                        }
+                        System.out.println("É transporte médico?[s/n]: ");
+                        String medica = scin.nextLine();
+                        if(medica.equals("s")) {
+                            this.logNegocio.adicionaEncomenda(this.logNegocio.criaEncomenda(this.logNegocio.geraCodEncomenda(), username, nloja, "", LocalDateTime.now(), 0.0, matrix, ind, true, false));
                         }
                         else{
-                            System.out.println("A sua escolha é invalida");
+                            if(medica.equals("n")) {
+                                this.logNegocio.adicionaEncomenda(this.logNegocio.criaEncomenda(this.logNegocio.geraCodEncomenda(), username, nloja, "", LocalDateTime.now(), 0.0, matrix, ind, false, false));
+                            }
+                            else{
+                                System.out.println("A sua escolha é invalida");
+                            }
                         }
-                    }
-                    if(this.logNegocio.temFila(nloja)){
-                        this.logNegocio.adicionaEncFila(nloja);
+                        if(this.logNegocio.temFila(nloja)){
+                            this.logNegocio.adicionaEncFila(nloja);
+                        }
+                        else{
+
+                            this.logNegocio.adicionaEncLoja(nloja);
+                        }
+                        this.logNegocio.adicionaAceites(this.logNegocio.maiorEncomenda());
+                        this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
+                        System.out.println("A sua encomenda foi realizada, muito obrigado");
                     }
                     else{
-
-                        this.logNegocio.adicionaEncLoja(nloja);
+                        throw new UserInexistenteException("Esta Loja não existe");
                     }
-                    this.logNegocio.adicionaAceites(this.logNegocio.maiorEncomenda());
-                    this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
-                    System.out.println("A sua encomenda foi realizada, muito obrigado");
                     break;
                 case 2:
                     lojas = new StringBuilder("\n*** Lojas registadas ***\n");

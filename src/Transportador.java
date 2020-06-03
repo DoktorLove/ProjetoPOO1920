@@ -131,6 +131,14 @@ public abstract class Transportador extends User
         return this.classificacao.get(name);
     }
 
+    public void addEncomenda(Encomenda e){
+        this.encomendas.put(e.getCodigo(),e.clone());
+    }
+
+    public void removeEncomenda(String cod){
+        this.encomendas.remove(cod);
+    }
+
     public double classMedia(){
         double sum = 0;
         int i = 0;

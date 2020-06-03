@@ -167,7 +167,9 @@ public class TrazAqui implements Serializable{
     }
 
     public void adicionaEncLoja(String username) throws EncomendaInexistenteException {
+        Random r = new Random();
         String cd = Collections.max(this.getEncomendas().keySet());
+        this.getEncomenda(cd).setPeso(r.nextDouble());
         ((LojaSemFila) this.users.get(username)).addEncomenda(this.getEncomenda(cd));
     }
 
@@ -182,6 +184,11 @@ public class TrazAqui implements Serializable{
         return h;
     }
 
+    public void realizaEncomenda(String codEnc, String usernameV){
+        this.encomendas.get(codEnc).setTransportador(usernameV);
+        ((Loja) this.users.get(this.encomendas.get(codEnc).getLoja())).removeEncomenda(codEnc);
+        ((Transportador) this.users.get(usernameV)).addEncomenda(this.encomendas.get(codEnc).clone());
+    }
 
     public static Localizacao criaLocalizacao(double x, double y){
         return new Localizacao(x,y);
@@ -221,12 +228,23 @@ public class TrazAqui implements Serializable{
             lst.add(criaLinhaEncomenda(produtos[i][0],produtos[i][1],Double.parseDouble(produtos[i][2]),Integer.parseInt(produtos[i][3])).clone());
             i += 1;
         }
-        return new Encomenda(codigo,utilizador,loja,transportador,ldt,peso,lst,medica,entregue);
+        return new Encomenda(codigo,utilizador,loja,transportador,ldt,null,peso,lst,medica,entregue);
     }
 
     public String maiorEncomenda(){
-        String cd = Collections.max(this.getEncomendas().keySet());
-        return cd;
+        return Collections.max(this.getEncomendas().keySet());
+    }
+
+    public String maiorUser(){
+        return Collections.max(this.getUsers().keySet());
+    }
+
+    public String user2Vol(String username, Boolean medica, double raio,double latitude,double longitude) throws UserInexistenteException {
+        Utilizador u = (Utilizador) this.getUser(username).clone();
+        String codv = "v" + (Integer.parseInt(this.maiorUser().substring(1,username.length()))+1);
+        Voluntario v = new Voluntario(codv,u.getNome(),u.getPassword(),new Localizacao(latitude,longitude),raio,true,medica,new HashMap<>(),new HashMap<>(),u.getIdade(),u.getSexo());
+        this.adicionaUser(v);
+        return codv;
     }
 
     public LinhaEncomenda criaLinhaEncomenda(String ref, String descricao, double preco, int quantidade){
@@ -263,8 +281,31 @@ public class TrazAqui implements Serializable{
         return l;
     }
 
-    public List<String> listOfLojasInfo(){
-        List<Loja> lst = this.listOfLojas();
+    public List<Encomenda> listOfEncomendas(String username){
+        List<Encomenda> l = new ArrayList<>();
+        Transportador t = (Transportador) this.users.get(username).clone();
+        for(Encomenda e: this.getEncomendas().values()) {
+            Localizacao l1 = this.users.get(e.getUtilizador()).getPosicao();
+            Localizacao l2 = this.users.get(e.getLoja()).getPosicao();
+            if(t.dentroRaio(l1) && t.dentroRaio(l2) && !(!t.getTransporteMedico() && e.getMedica()) && e.getTransportador().equals("")) {
+                System.out.println(t.dentroRaio(l1) + ";" + t.dentroRaio(l2) + ";" + !(!t.getTransporteMedico() && e.getMedica()) + " " + e.getTransportador().equals(""));
+                l.add(e.clone());
+            }
+        }
+        return l;
+    }
+
+    public List<String> listOfEncomendasInfo(Iterable<Encomenda> lst){
+        List<String> end = new ArrayList<>();
+        for(Encomenda e: lst){
+            String s = "";
+            s = "Codigo: " + e.getCodigo() + "\n" + "Hora do pedido: " + e.getHoraI() + "\n" + "Peso do pedido" + e.getPeso() + "\n" + "Pedido medico?: " + e.getMedica() + "\n" + "Loja: " + e.getLoja() + "\n" + "Coordenadas de entrega: " + this.users.get(e.getUtilizador()).getPosicao() + "\n";
+            end.add(s);
+        }
+        return end;
+    }
+
+    public List<String> listOfLojasInfo(Iterable<Loja> lst){
         List<String> end = new ArrayList<>();
         for(Loja l: lst){
             String s = "";
@@ -277,6 +318,65 @@ public class TrazAqui implements Serializable{
             end.add(s);
         }
         return end;
+    }
+
+    public List<Loja> listOfLojasSemFila(){
+        List<Loja> l = new ArrayList<>();
+        for(User u: this.getUsersAsList()) {
+            if(u instanceof LojaSemFila) {
+                l.add(((Loja) u).clone());
+            }
+        }
+        return l;
+    }
+
+    public List<Loja> listOfLojasComFila(){
+        List<Loja> l = new ArrayList<>();
+        for(User u: this.getUsersAsList()) {
+            if(u instanceof LojaComFila) {
+                l.add(((Loja) u).clone());
+            }
+        }
+        return l;
+    }
+
+    public Set<Loja> ordenaLojasDistancia(double latitude, double longitude){
+        Set<Loja> conj = new TreeSet<>((o1, o2) -> {
+            double a = Math.sqrt((Math.pow((o1.getPosicao().getLatitude() - latitude),2))+(Math.pow((o1.getPosicao().getLongitude() - longitude),2)));
+            double b = Math.sqrt((Math.pow((o2.getPosicao().getLatitude() - latitude),2))+(Math.pow((o2.getPosicao().getLongitude() - longitude),2)));
+            return (int) (a - b);
+        });
+        for(Loja l: this.listOfLojas()){
+            conj.add(l.clone()); }
+        return conj;
+    }
+
+    public TreeSet<User> ordenarUsers(Comparator<User> c) {
+        TreeSet<User> t = new TreeSet<User>(c);
+        users.values().forEach(h -> {
+            t.add(h.clone());
+        });
+        return t;
+    }
+
+    public Set<User> ordenarUsers(String criterio) {
+        TreeSet<User> r = ordenarUsers(getOrdem(criterio));
+        return r;
+    }
+
+    public List<Loja> ordenaLojasClass(){
+        List<Loja> lst = new ArrayList<>();
+        for(Loja l: this.listOfLojas()){
+            lst.add(l.clone()); }
+        lst.sort(new ClassLojaComparator());
+        return lst;
+    }
+
+    public Set<Loja> ordenaLojasNome(){
+        Set<Loja> conj = new TreeSet<>(new NomeLojaComparator());
+        for(Loja l: this.listOfLojas()){
+            conj.add(l.clone()); }
+        return conj;
     }
 
     public String toString(){

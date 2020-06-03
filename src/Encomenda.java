@@ -9,7 +9,8 @@ public class Encomenda implements Serializable {
     private String utilizador;
     private String loja;
     private String transportador;
-    private LocalDateTime hora;
+    private LocalDateTime horaI;
+    private LocalDateTime horaF;
     private double peso;
     private List<LinhaEncomenda> produtos;
     private boolean medica;
@@ -20,20 +21,22 @@ public class Encomenda implements Serializable {
         this.utilizador = "N/A";
         this.loja = "N/A";
         this.transportador = "N/A";
-        this.hora = LocalDateTime.now();
+        this.horaI = LocalDateTime.now();
+        this.horaF = null;
         this.peso = 0.0;
         this.produtos = new ArrayList<>();
         this.medica = false;
         this.entregue = false;
     }
 
-    public Encomenda(String codigo,String utilizador, String loja,String transportador ,LocalDateTime hora,
-                     double peso, List<LinhaEncomenda> produtos, boolean medica, boolean entregue){
+    public Encomenda(String codigo,String utilizador, String loja,String transportador ,LocalDateTime horaI,
+                     LocalDateTime horaF, double peso, List<LinhaEncomenda> produtos, boolean medica, boolean entregue){
         this.codigo = codigo;
         this.utilizador = utilizador;
         this.loja = loja;
         this.transportador = transportador;
-        this.hora = hora;
+        this.horaI = horaI;
+        this.horaF = horaF;
         this.peso = peso;
         setProdutos(produtos);
         this.medica = medica;
@@ -45,7 +48,8 @@ public class Encomenda implements Serializable {
         this.utilizador = e.getUtilizador();
         this.loja = e.getLoja();
         this.transportador = e.getTransportador();
-        this.hora = e.getHora();
+        this.horaI = e.getHoraI();
+        this.horaF = e.getHoraF();
         this.peso = e.getPeso();
         setProdutos(e.getProdutos());
         this.medica = e.getMedica();
@@ -68,8 +72,12 @@ public class Encomenda implements Serializable {
         return this.transportador;
     }
 
-    public LocalDateTime getHora() {
-        return this.hora;
+    public LocalDateTime getHoraI() {
+        return this.horaI;
+    }
+
+    public LocalDateTime getHoraF() {
+        return this.horaF;
     }
 
     public double getPeso() {
@@ -106,8 +114,20 @@ public class Encomenda implements Serializable {
         this.transportador = transportador;
     }
 
-    public void setHora(LocalDateTime hora) {
-        this.hora = hora;
+    public double getPreco(){
+        double total = 0;
+        for(LinhaEncomenda le: this.produtos){
+            total = total + le.getPreco();
+        }
+        return total;
+    }
+
+    public void setHoraI(LocalDateTime horaI) {
+        this.horaI = horaI;
+    }
+
+    public void setHoraF(LocalDateTime horaF) {
+        this.horaF = horaF;
     }
 
     public void setPeso(double peso) {
@@ -153,7 +173,8 @@ public class Encomenda implements Serializable {
                 .append("\nUtilizador: ").append(this.utilizador + "\n")
                 .append("Loja: ").append(this.loja + "\n")
                 .append("Transportador: ").append(this.transportador + "\n")
-                .append("Hora: ").append(this.hora + "\n")
+                .append("Hora do pedido: ").append(this.horaI + "\n")
+                .append("Hora da entrega: ").append(this.horaF + "\n")
                 .append("Peso : ").append(this.peso + "\n")
                 .append("Produtos: ").append(this.produtos + "\n")
                 .append("Contém material médico?: ").append(this.medica + "\n")
@@ -169,7 +190,8 @@ public class Encomenda implements Serializable {
                 this.getUtilizador().equals(e.getUtilizador()) &&
                 this.getLoja().equals(e.getLoja()) &&
                 this.getTransportador().equals(e.getTransportador()) &&
-                this.getHora().equals(e.getHora()) &&
+                this.getHoraI().equals(e.getHoraI()) &&
+                this.getHoraF().equals(e.getHoraF()) &&
                 this.getPeso() == e.getPeso() &&
                 this.getProdutos().equals(e.getProdutos()) &&
                 this.getMedica() == e.getMedica() &&

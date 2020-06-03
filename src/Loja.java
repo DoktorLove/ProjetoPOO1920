@@ -71,6 +71,8 @@ public abstract class Loja extends User
         this.encomendas.put(e.getCodigo(),e.clone());
     }
 
+    public void removeEncomenda(String s){this.encomendas.remove(s);}
+
     public double classMedia(){
         double sum = 0;
         int i = 0;

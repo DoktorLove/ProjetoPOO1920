@@ -173,6 +173,7 @@ public abstract class Transportador extends User
     public boolean dentroRaio(Localizacao local)
     {
         double distancia = distanciaA(local);
+        //System.out.println(distancia+" "+this.raio);
         if (this.raio > distancia)
             return true;
         return false;

@@ -68,7 +68,7 @@ public class TrazAquiApp{
         this.menuEstatisticas = new Menu(opcoesEstatisticas);
         try {
             this.logNegocio = TrazAqui.carregaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
-            System.out.println(this.logNegocio.toString());
+            //System.out.println(this.logNegocio.toString());
         }
         catch (FileNotFoundException e) {
             System.out.println("Parece que é a primeira utilização, vamos importar informação do ficheiro de logs.");
@@ -311,7 +311,7 @@ public class TrazAquiApp{
         } while (menuUtil.getOpcao()!=0);
     }
 
-    public void menuDeTransportador(String username){
+    public void menuDeTransportador(String username) throws EncomendaInexistenteException {
         Scanner scin = new Scanner(System.in);
         do {
             menuTransportadora.executa();
@@ -320,7 +320,14 @@ public class TrazAquiApp{
                     encomendasDisponiveis(username);
                     break;
                 case 2:
-                    //confirmar entrega de encomenda
+                    System.out.println("Insira o código da encomenda: ");
+                    String cod = scin.nextLine();
+                    System.out.println(this.logNegocio.getEncomendaString(cod));
+                    System.out.println("Deseja confirmar a entraga?[true/false]: ");
+                    boolean b = Boolean.parseBoolean(scin.nextLine());
+                    if(b){
+                        this.logNegocio.confirmarEntEncomenda(cod,username);
+                    }
                     break;
                 case 3:
                     //historico de encomendas
@@ -334,11 +341,11 @@ public class TrazAquiApp{
 
     public void encomendasDisponiveis(String username){
         Scanner scin = new Scanner(System.in);
-        StringBuilder encomendas = new StringBuilder("*** Encomendas disponiveis ***\n");
-        for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendas(username))){
-            encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
-        }
         do {
+            StringBuilder encomendas = new StringBuilder("*** Encomendas disponiveis ***\n");
+            for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendas(username))){
+                encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+            }
             System.out.println(encomendas);
             menuEncomendaPorEntregar.executa();
             switch (menuEncomendaPorEntregar.getOpcao()) {

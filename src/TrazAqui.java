@@ -190,6 +190,12 @@ public class TrazAqui implements Serializable{
         ((Transportador) this.users.get(usernameV)).addEncomenda(this.encomendas.get(codEnc).clone());
     }
 
+    public void confirmarEntEncomenda(String cod, String username){
+        this.encomendas.get(cod).setEntregue(true);
+        this.encomendas.get(cod).setHoraF(LocalDateTime.now());
+        ((Transportador) this.users.get(username)).removeEncomenda(cod);
+    }
+
     public static Localizacao criaLocalizacao(double x, double y){
         return new Localizacao(x,y);
     }
@@ -300,12 +306,21 @@ public class TrazAqui implements Serializable{
         for(Encomenda e: this.getEncomendas().values()) {
             Localizacao l1 = this.users.get(e.getUtilizador()).getPosicao();
             Localizacao l2 = this.users.get(e.getLoja()).getPosicao();
+            //System.out.println(t.dentroRaio(l1) + ";" + t.dentroRaio(l2) + ";" + !(!t.getTransporteMedico() && e.getMedica()) + " " + e.getTransportador().equals(""));
             if(t.dentroRaio(l1) && t.dentroRaio(l2) && !(!t.getTransporteMedico() && e.getMedica()) && e.getTransportador().equals("") && ((Loja) this.users.get(e.getLoja())).getEncomendas().containsKey(e.getCodigo())) {
-                //System.out.println(t.dentroRaio(l1) + ";" + t.dentroRaio(l2) + ";" + !(!t.getTransporteMedico() && e.getMedica()) + " " + e.getTransportador().equals(""));
                 l.add(e.clone());
             }
         }
         return l;
+    }
+
+    public String getEncomendaString(String num) throws EncomendaInexistenteException {
+        if(this.encomendas.containsKey(num)) {
+            return "Codigo: " + this.encomendas.get(num).getCodigo() + "\n" + "Hora do pedido: " + this.encomendas.get(num).getHoraI() + "\n" + "Peso do pedido" + this.encomendas.get(num).getPeso() + "\n" + "Pedido medico?: " + this.encomendas.get(num).getMedica() + "\n" + "Loja: " + this.encomendas.get(num).getLoja() + "\n" + "Coordenadas de entrega: " + this.users.get(this.encomendas.get(num).getUtilizador()).getPosicao() + "\n";
+        }
+        else{
+            throw new EncomendaInexistenteException("A encomenda não existe");
+        }
     }
 
     public List<String> listOfEncomendasInfo(Iterable<Encomenda> lst){

@@ -188,6 +188,12 @@ public class TrazAqui implements Serializable{
         this.encomendas.get(codEnc).setTransportador(usernameV);
         ((Loja) this.users.get(this.encomendas.get(codEnc).getLoja())).removeEncomenda(codEnc);
         ((Transportador) this.users.get(usernameV)).addEncomenda(this.encomendas.get(codEnc).clone());
+        this.encomendas.get(codEnc).setPropostas(new ArrayList<>());
+    }
+
+    public void realizaProposta(String cod, String username){
+        this.encomendas.get(cod).adicionaProposta(this.users.get(username).getUsername());
+        System.out.println(this.encomendas.get(cod));
     }
 
     public void confirmarEntEncomenda(String cod, String username){
@@ -247,7 +253,7 @@ public class TrazAqui implements Serializable{
             lst.add(criaLinhaEncomenda(produtos[i][0],produtos[i][1],Double.parseDouble(produtos[i][2]),Integer.parseInt(produtos[i][3])).clone());
             i += 1;
         }
-        return new Encomenda(codigo,utilizador,loja,transportador,ldt,null,peso,lst,medica,entregue);
+        return new Encomenda(codigo,utilizador,loja,transportador,ldt,null,peso,lst,new ArrayList<>(),medica,entregue);
     }
 
     public String maiorEncomenda(){
@@ -314,6 +320,25 @@ public class TrazAqui implements Serializable{
         return l;
     }
 
+    public List<Encomenda> listOfEncomendasPorEntregar(String username){
+        List<Encomenda> l = new ArrayList<>();
+        Utilizador u = (Utilizador) this.users.get(username).clone();
+        for(Encomenda e: this.getEncomendas().values()){
+            if(e.getUtilizador().equals(username) && e.getEntregue() == false){
+                l.add(e.clone());
+            }
+        }
+        return l;
+    }
+
+    public List<String> listOfPropostas(String cod){
+        List<String> l = new ArrayList<>();
+        for(String s: this.encomendas.get(cod).getPropostas()){
+            l.add(s);
+        }
+        return l;
+    }
+
     public String getEncomendaString(String num) throws EncomendaInexistenteException {
         if(this.encomendas.containsKey(num)) {
             return "Codigo: " + this.encomendas.get(num).getCodigo() + "\n" + "Hora do pedido: " + this.encomendas.get(num).getHoraI() + "\n" + "Peso do pedido" + this.encomendas.get(num).getPeso() + "\n" + "Pedido medico?: " + this.encomendas.get(num).getMedica() + "\n" + "Loja: " + this.encomendas.get(num).getLoja() + "\n" + "Coordenadas de entrega: " + this.users.get(this.encomendas.get(num).getUtilizador()).getPosicao() + "\n";
@@ -327,7 +352,26 @@ public class TrazAqui implements Serializable{
         List<String> end = new ArrayList<>();
         for(Encomenda e: lst){
             String s = "";
-            s = "Codigo: " + e.getCodigo() + "\n" + "Hora do pedido: " + e.getHoraI() + "\n" + "Peso do pedido" + e.getPeso() + "\n" + "Pedido medico?: " + e.getMedica() + "\n" + "Loja: " + e.getLoja() + "\n" + "Coordenadas de entrega: " + this.users.get(e.getUtilizador()).getPosicao() + "\n";
+            s = "Codigo: " + e.getCodigo() + "\n" + "Hora do pedido: " + e.getHoraI() + "\n" + "Peso do pedido" + e.getPeso() + "\n" + "Pedido medico?: " + e.getMedica() + "\n" + "Loja: " + e.getLoja() + "\n" + "Coordenadas de entrega: " + this.users.get(e.getUtilizador()).getPosicao() + "\n" + "Empresas interessadas" + e.getPropostas() + "\n";
+            end.add(s);
+        }
+        return end;
+    }
+
+    private double custoViagem(String cod, Empresa e){
+        Localizacao lu = this.users.get(this.encomendas.get(cod).getUtilizador()).getPosicao();
+        Localizacao ll = this.users.get(this.encomendas.get(cod).getLoja()).getPosicao();
+        Localizacao le = e.getPosicao();
+        double distancia = e.distanciaA(ll) + e.distanciaA(lu);
+        return (distancia*e.getCusto_Km()) + (distancia*e.getCusto_Peso());
+    }
+
+    public List<String> listOfTransportadoresInfo(String cod, Iterable<String> lst){
+        List<String> end = new ArrayList<>();
+        for(String st: lst){
+            Empresa t = (Empresa) this.users.get(st);
+            String s = "";
+            s = "Codigo: " + t.getUsername() + "\n" + "Nome: " + t.getNome() + "\n" + "Localizaçao: " +  t.getPosicao() + "\n" + "Raio: " +  t.getRaio() + "\n" + "Classificaçao: " + t.classMedia() + "\n" + "Custo total da viagem: " +  this.custoViagem(cod,t) + "\n";
             end.add(s);
         }
         return end;

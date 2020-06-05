@@ -8,7 +8,8 @@ public class TrazAquiApp{
     private TrazAqui logNegocio;
 
     private Menu init, difUsers, menuUtil, menuLoja, menuTransportadora, menuEncomenda,
-            menuEncomendaPorEntregar, menuHistoricoEncomendas, menuEstatisticas;
+            menuEncomendaPorEntregar, menuHistoricoEncomendas, menuEstatisticas,
+            menuPropostaTransporte;
 
     public static void main(String[] args){
         new TrazAquiApp().run();
@@ -40,7 +41,7 @@ public class TrazAquiApp{
                                         "Filtrar lojas disponiveis",
                                         "Filtrar lojas com fila",
                                         "Filtrar lojas sem fila"};
-        String[] opcoesEncomendasPorEntregar = {"Aceitar transporte de encomenda",
+        String[] opcoesEncomendasPorEntregar = {"Propostas de transporte de encomenda",
                                                 "Ordenar por distancia a percorrer",
                                                 "Ordenar por tempo de pedido",
                                                 "Filtrar encomenda médica"};
@@ -57,6 +58,8 @@ public class TrazAquiApp{
         String[] opcoesEstatisticas = {"Top 10 utilizadores da App(mais encomendas feitas)",
                                         "Top 10 voluntarios com mais kms",
                                         "Top 10 empresas com mais kms"};
+        String[] opcoesPropostasTransporte = {"Aceitar proposta de tranporte",
+                                                "Ordenar por preço proposto"};
         this.init = new Menu(opcoesInit);
         this.difUsers = new Menu(opcoesDifUsers);
         this.menuUtil = new Menu(opcoesMenuUtil);
@@ -66,9 +69,10 @@ public class TrazAquiApp{
         this.menuEncomendaPorEntregar = new Menu(opcoesEncomendasPorEntregar);
         this.menuHistoricoEncomendas = new Menu(opcoesMenuHistorico);
         this.menuEstatisticas = new Menu(opcoesEstatisticas);
+        this.menuPropostaTransporte = new Menu(opcoesPropostasTransporte);
         try {
             this.logNegocio = TrazAqui.carregaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
-            //System.out.println(this.logNegocio.toString());
+            System.out.println(this.logNegocio.toString());
         }
         catch (FileNotFoundException e) {
             System.out.println("Parece que é a primeira utilização, vamos importar informação do ficheiro de logs.");
@@ -296,10 +300,12 @@ public class TrazAquiApp{
                     System.out.println("Raio de ação: ");
                     double raio = Double.parseDouble(scin.nextLine());
                     String vusername = this.logNegocio.user2Vol(username, medico, raio,latitude1,longitude1);
+                    this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
                     menuDeTransportador(vusername);
                     break;
                 case 3:
                     //Encomendas por entregar(ver pedidos de transporte)
+                    menuDeEncomendasPorEntregar(username);
                     break;
                 case 4:
                     //historico de encomendas
@@ -309,63 +315,6 @@ public class TrazAquiApp{
                     break;
             }
         } while (menuUtil.getOpcao()!=0);
-    }
-
-    public void menuDeTransportador(String username) throws EncomendaInexistenteException {
-        Scanner scin = new Scanner(System.in);
-        do {
-            menuTransportadora.executa();
-            switch (menuTransportadora.getOpcao()) {
-                case 1:
-                    encomendasDisponiveis(username);
-                    break;
-                case 2:
-                    System.out.println("Insira o código da encomenda: ");
-                    String cod = scin.nextLine();
-                    System.out.println(this.logNegocio.getEncomendaString(cod));
-                    System.out.println("Deseja confirmar a entraga?[true/false]: ");
-                    boolean b = Boolean.parseBoolean(scin.nextLine());
-                    if(b){
-                        this.logNegocio.confirmarEntEncomenda(cod,username);
-                    }
-                    break;
-                case 3:
-                    //historico de encomendas
-                    break;
-                case 4:
-                    //procurar utilizadores
-                    break;
-            }
-        } while (menuTransportadora.getOpcao()!=0);
-    }
-
-    public void encomendasDisponiveis(String username){
-        Scanner scin = new Scanner(System.in);
-        do {
-            StringBuilder encomendas = new StringBuilder("*** Encomendas disponiveis ***\n");
-            for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendas(username))){
-                encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
-            }
-            System.out.println(encomendas);
-            menuEncomendaPorEntregar.executa();
-            switch (menuEncomendaPorEntregar.getOpcao()) {
-                case 1:
-                    System.out.println("Insira o código da encomenda: ");
-                    String cod = scin.nextLine();
-                    this.logNegocio.realizaEncomenda(cod,username);
-                    break;
-                case 2:
-                    //ordenar por distancia
-                    break;
-                case 3:
-                    // ordenar por tempo do pedido
-                    break;
-                case 4:
-                    //filtrar encomendas medicas
-                    break;
-            }
-        } while (menuEncomendaPorEntregar.getOpcao()!=0);
-        System.out.println(this.logNegocio.toString());
     }
 
     public void fazerEncomenda(double latitude, double longitude, String username) throws IOException, UserInexistenteException, EncomendaInexistenteException {
@@ -465,6 +414,121 @@ public class TrazAquiApp{
             }
             //System.out.println(this.logNegocio.toString());
         } while (menuEncomenda.getOpcao()!=0);
+    }
+
+    public void menuDeTransportador(String username) throws EncomendaInexistenteException, IOException {
+        Scanner scin = new Scanner(System.in);
+        do {
+            menuTransportadora.executa();
+            switch (menuTransportadora.getOpcao()) {
+                case 1:
+                    encomendasDisponiveis(username);
+                    break;
+                case 2:
+                    System.out.println("Insira o código da encomenda: ");
+                    String cod = scin.nextLine();
+                    System.out.println(this.logNegocio.getEncomendaString(cod));
+                    System.out.println("Deseja confirmar a entrega?[true/false]: ");
+                    boolean b = Boolean.parseBoolean(scin.nextLine());
+                    if(b){
+                        this.logNegocio.confirmarEntEncomenda(cod,username);
+                    }
+                    this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
+                    break;
+                case 3:
+                    //historico de encomendas
+                    break;
+                case 4:
+                    //procurar utilizadores
+                    break;
+            }
+        } while (menuTransportadora.getOpcao()!=0);
+    }
+
+    public void encomendasDisponiveis(String username) throws IOException {
+        Scanner scin = new Scanner(System.in);
+        do {
+            StringBuilder encomendas = new StringBuilder("*** Encomendas disponiveis ***\n");
+            for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendas(username))){
+                encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+            }
+            System.out.println(encomendas);
+            menuEncomendaPorEntregar.executa();
+            switch (menuEncomendaPorEntregar.getOpcao()) {
+                case 1:
+                    if(username.charAt(0) == 'v'){
+                        System.out.println("Insira o código da encomenda: ");
+                        String cod = scin.nextLine();
+                        this.logNegocio.realizaEncomenda(cod, username);
+                    }
+                    if(username.charAt(0) == 't'){
+                        System.out.println("Insira o código da encomenda para fazer proposta: ");
+                        String cod = scin.nextLine();
+                        //System.out.println(cod);
+                        this.logNegocio.realizaProposta(cod,username);
+                    }
+                    this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
+                    break;
+                case 2:
+                    //ordenar por distancia
+                    break;
+                case 3:
+                    // ordenar por tempo do pedido
+                    break;
+                case 4:
+                    //filtrar encomendas medicas
+                    break;
+            }
+        } while (menuEncomendaPorEntregar.getOpcao()!=0);
+        //System.out.println(this.logNegocio.toString());
+    }
+
+    public void menuDeEncomendasPorEntregar(String username) throws IOException {
+        Scanner scin = new Scanner(System.in);
+        do {
+            StringBuilder encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+            for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasPorEntregar(username))){
+                encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+            }
+            System.out.println(encomendas);
+            menuEncomendaPorEntregar.executa();
+            switch (menuEncomendaPorEntregar.getOpcao()) {
+                case 1:
+                    System.out.println("Insira o código da encomenda que deseja selecionar: ");
+                    String cod = scin.nextLine();
+                    menuDePropostasTransporte(cod,username);
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+            }
+        } while (menuEncomendaPorEntregar.getOpcao()!=0);
+    }
+
+    public void menuDePropostasTransporte(String cod, String username) throws IOException {
+        Scanner scin = new Scanner(System.in);
+        do {
+            StringBuilder encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+            for(String ln: this.logNegocio.listOfTransportadoresInfo(cod,this.logNegocio.listOfPropostas(cod))){
+                encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+            }
+            System.out.println(encomendas);
+            menuPropostaTransporte.executa();
+            switch (menuPropostaTransporte.getOpcao()) {
+                case 1:
+                    System.out.println("Insira o username da empresa: ");
+                    String nome = scin.nextLine();
+                    this.logNegocio.realizaEncomenda(cod,nome);
+                    this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
+                    break;
+                case 2:
+                    //ordenar por preço proposto
+                    break;
+            }
+        } while (menuPropostaTransporte.getOpcao()!=0);
     }
 
     public void menuDeLoja(String username){

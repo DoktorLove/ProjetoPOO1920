@@ -21,9 +21,9 @@ public class Encomenda implements Serializable {
         this.codigo = "N/A";
         this.utilizador = "N/A";
         this.loja = "N/A";
-        this.transportador = "N/A";
+        this.transportador = "";
         this.horaI = LocalDateTime.now();
-        this.horaF = null;
+        this.horaF = LocalDateTime.now();
         this.peso = 0.0;
         this.produtos = new ArrayList<>();
         this.propostas = new ArrayList<>();

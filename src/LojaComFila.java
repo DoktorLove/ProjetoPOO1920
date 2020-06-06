@@ -71,6 +71,16 @@ public class LojaComFila extends Loja
         this.fila_espera.add(e.clone());
     }
 
+    public void retiraEncFila(){
+        this.fila_espera.remove(0);
+    }
+
+    public String retiraEncFilaCod(){
+        String e = this.fila_espera.get(0).getCodigo();
+        this.fila_espera.remove(0);
+        return e;
+    }
+
     //Metodo toString
     public String toString()
     {

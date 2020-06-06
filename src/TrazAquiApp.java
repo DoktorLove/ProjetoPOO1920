@@ -30,7 +30,9 @@ public class TrazAquiApp{
                                             "Confirmar entrega de encomenda",
                                             "Historico de encomendas",
                                             "Procurar utilizadores"};
-        String[] opcoesMenuLoja ={"Encomendas por entregar",
+        String[] opcoesMenuLoja ={"Aceitar encomendas",
+                                    "Indicar encomenda pronta",
+                                    "Encomendas por entregar",
                                     "Encomendas em fila de espera",
                                     "Historico de encomendas",
                                     "Procurar utilizadores"};
@@ -72,7 +74,6 @@ public class TrazAquiApp{
         this.menuPropostaTransporte = new Menu(opcoesPropostasTransporte);
         try {
             this.logNegocio = TrazAqui.carregaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
-            System.out.println(this.logNegocio.toString());
         }
         catch (FileNotFoundException e) {
             System.out.println("Parece que é a primeira utilização, vamos importar informação do ficheiro de logs.");
@@ -104,6 +105,8 @@ public class TrazAquiApp{
     }
 
     private void run(){
+        this.logNegocio.verificaAceites();
+        System.out.println(this.logNegocio.toString());
         do {
             init.executa();
             switch (init.getOpcao()) {
@@ -267,7 +270,7 @@ public class TrazAquiApp{
             this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
             menuDeLoja(username);
         }
-        catch (UserInexistenteException e) {
+        catch (UserInexistenteException | EncomendaInexistenteException e) {
             System.out.println(e.getMessage());
         } catch (FileNotFoundException e) {
             System.out.println("Ficheiro objeto não encontrado");
@@ -353,25 +356,18 @@ public class TrazAquiApp{
                         }
                         System.out.println("É transporte médico?[s/n]: ");
                         String medica = scin.nextLine();
+                        Random r = new Random();
                         if(medica.equals("s")) {
-                            this.logNegocio.adicionaEncomenda(this.logNegocio.criaEncomenda(this.logNegocio.geraCodEncomenda(), username, nloja, "", LocalDateTime.now(), 0.0, matrix, ind, true, false));
+                            this.logNegocio.adicionaEncomenda(this.logNegocio.criaEncomenda(this.logNegocio.geraCodEncomenda(), username, nloja, "", LocalDateTime.now(), r.nextDouble(), matrix, ind, true, false));
                         }
                         else{
                             if(medica.equals("n")) {
-                                this.logNegocio.adicionaEncomenda(this.logNegocio.criaEncomenda(this.logNegocio.geraCodEncomenda(), username, nloja, "", LocalDateTime.now(), 0.0, matrix, ind, false, false));
+                                this.logNegocio.adicionaEncomenda(this.logNegocio.criaEncomenda(this.logNegocio.geraCodEncomenda(), username, nloja, "", LocalDateTime.now(), r.nextDouble(), matrix, ind, false, false));
                             }
                             else{
                                 System.out.println("A sua escolha é invalida");
                             }
                         }
-                        if(this.logNegocio.temFila(nloja)){
-                            this.logNegocio.adicionaEncFila(nloja);
-                        }
-                        else{
-
-                            this.logNegocio.adicionaEncLoja(nloja);
-                        }
-                        this.logNegocio.adicionaAceites(this.logNegocio.maiorEncomenda());
                         this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
                         System.out.println("A sua encomenda foi realizada, muito obrigado");
                     }
@@ -419,6 +415,7 @@ public class TrazAquiApp{
     public void menuDeTransportador(String username) throws EncomendaInexistenteException, IOException {
         Scanner scin = new Scanner(System.in);
         do {
+            //print com as encomendas que transporta no momento
             menuTransportadora.executa();
             switch (menuTransportadora.getOpcao()) {
                 case 1:
@@ -499,10 +496,13 @@ public class TrazAquiApp{
                     menuDePropostasTransporte(cod,username);
                     break;
                 case 2:
+                    //ordenar por distancia a percorrer
                     break;
                 case 3:
+                    //ordenar por tempo de pedido
                     break;
                 case 4:
+                    //Filtrar encomendas medicas
                     break;
             }
         } while (menuEncomendaPorEntregar.getOpcao()!=0);
@@ -531,16 +531,65 @@ public class TrazAquiApp{
         } while (menuPropostaTransporte.getOpcao()!=0);
     }
 
-    public void menuDeLoja(String username){
+    public void menuDeLoja(String username) throws UserInexistenteException, EncomendaInexistenteException, IOException {
+        Scanner scin = new Scanner(System.in);
         do {
-            menuUtil.executa();
-            switch (menuUtil.getOpcao()) {
+            StringBuilder encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+            for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasPorAceitar(username))){
+                encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+            }
+            System.out.println(encomendas);
+            menuLoja.executa();
+            switch (menuLoja.getOpcao()) {
                 case 1:
+                    //aceitar encomendas
+                    System.out.println("Insira o código da encomenda que deseja aceitar: ");
+                    String cod = scin.nextLine();
+                    if(this.logNegocio.temFila(username)){
+                        this.logNegocio.adicionaEncFila(username,cod);
+                    }
+                    else{
+                        this.logNegocio.adicionaEncLoja(username,cod);
+                    }
+                    this.logNegocio.adicionaAceites(cod);
+                    this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
                     break;
                 case 2:
+                    //indicar que uma encomenda da fila encontra-se pronta
+                    if(this.logNegocio.temFila(username)) {
+                        System.out.println("A encomenda em primeiro lugar na fila está pronta?: ");
+                        boolean cd = Boolean.parseBoolean(scin.nextLine());
+                        if (cd) {
+                            String cod2 = this.logNegocio.retEncFilaCod(username);
+                            this.logNegocio.adicionaEncLoja(username, cod2);
+                            this.logNegocio.retiraEncFila(username, cod2);
+                        }
+                    }
+                    else{
+                        System.out.println("Esta loja não pode aceder a esta função pois não tem fila");
+                    }
+                    this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
+                    break;
+                case 3:
+                    //encomendas por entregar
+                    StringBuilder encomendas2 = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasFila(username))){
+                        encomendas2.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
+                    System.out.println(encomendas2);
+                    break;
+                case 4:
+                    //encomendas em fila de espera
+                    break;
+                case 5:
+                    //historico de encomendas
+                    break;
+                case 6:
+                    //Procurar Utilizador
                     break;
             }
-        } while (menuUtil.getOpcao()!=0);
+            System.out.println(this.logNegocio.toString());
+        } while (menuLoja.getOpcao()!=0);
     }
 
 }

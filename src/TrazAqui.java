@@ -161,16 +161,16 @@ public class TrazAqui implements Serializable{
         return e;
     }
 
-    public void adicionaEncFila(String username) throws EncomendaInexistenteException {
-        String cd = Collections.max(this.getEncomendas().keySet());
-        ((LojaComFila) this.users.get(username)).addEncFila(this.getEncomenda(cd));
+    public void adicionaEncFila(String username,String cod) throws EncomendaInexistenteException {
+        ((LojaComFila) this.users.get(username)).addEncFila(this.getEncomenda(cod));
     }
 
-    public void adicionaEncLoja(String username) throws EncomendaInexistenteException {
-        Random r = new Random();
-        String cd = Collections.max(this.getEncomendas().keySet());
-        this.getEncomenda(cd).setPeso(r.nextDouble());
-        ((LojaSemFila) this.users.get(username)).addEncomenda(this.getEncomenda(cd));
+    public void adicionaEncLoja(String username, String cod) throws EncomendaInexistenteException {
+        ((Loja) this.users.get(username)).addEncomenda(this.getEncomenda(cod));
+    }
+
+    public void retiraEncFila(String username, String cod){
+        ((LojaComFila) this.users.get(username)).retiraEncFila();
     }
 
     public User getUser(String nome) throws UserInexistenteException
@@ -231,6 +231,26 @@ public class TrazAqui implements Serializable{
         }
     }
 
+    public String retEncFilaCod(String username) throws UserInexistenteException {
+        return ((LojaComFila) this.getUser(username)).retiraEncFilaCod();
+    }
+
+    public void verificaAceites(){
+        for(String s: this.getAceites()){
+            Encomenda e = this.getEncomendas().get(s);
+            if(((Loja) this.getUsers().get(e.getLoja())).getEncomendas().containsKey(s) == false && this.getUsers().get(e.getLoja()) instanceof LojaSemFila) {
+                ((LojaSemFila) this.users.get(e.getLoja())).addEncomenda(e);
+            }
+            else {
+                if(this.getUsers().get(e.getLoja()) instanceof LojaComFila) {
+                    if (((LojaComFila) this.getUsers().get(e.getLoja())).getFila().contains(e) == false) {
+                        ((LojaComFila) this.users.get(e.getLoja())).addEncFila(e);
+                    }
+                }
+            }
+        }
+    }
+
     public boolean contemLoja(String username){
         if (this.users.containsKey(username)){
             return true;
@@ -253,7 +273,7 @@ public class TrazAqui implements Serializable{
             lst.add(criaLinhaEncomenda(produtos[i][0],produtos[i][1],Double.parseDouble(produtos[i][2]),Integer.parseInt(produtos[i][3])).clone());
             i += 1;
         }
-        return new Encomenda(codigo,utilizador,loja,transportador,ldt,null,peso,lst,new ArrayList<>(),medica,entregue);
+        return new Encomenda(codigo,utilizador,loja,transportador,ldt,LocalDateTime.now(),peso,lst,new ArrayList<>(),medica,entregue);
     }
 
     public String maiorEncomenda(){
@@ -312,7 +332,7 @@ public class TrazAqui implements Serializable{
         for(Encomenda e: this.getEncomendas().values()) {
             Localizacao l1 = this.users.get(e.getUtilizador()).getPosicao();
             Localizacao l2 = this.users.get(e.getLoja()).getPosicao();
-            //System.out.println(t.dentroRaio(l1) + ";" + t.dentroRaio(l2) + ";" + !(!t.getTransporteMedico() && e.getMedica()) + " " + e.getTransportador().equals(""));
+            //System.out.println(t.dentroRaio(l1) + ";" + t.dentroRaio(l2) + ";" + !(!t.getTransporteMedico() && e.getMedica()) + " " + e.getTransportador().equals("") + ((Loja) this.users.get(e.getLoja())).getEncomendas().containsKey(e.getCodigo()) + e.getCodigo());
             if(t.dentroRaio(l1) && t.dentroRaio(l2) && !(!t.getTransporteMedico() && e.getMedica()) && e.getTransportador().equals("") && ((Loja) this.users.get(e.getLoja())).getEncomendas().containsKey(e.getCodigo())) {
                 l.add(e.clone());
             }
@@ -322,9 +342,29 @@ public class TrazAqui implements Serializable{
 
     public List<Encomenda> listOfEncomendasPorEntregar(String username){
         List<Encomenda> l = new ArrayList<>();
-        Utilizador u = (Utilizador) this.users.get(username).clone();
         for(Encomenda e: this.getEncomendas().values()){
             if(e.getUtilizador().equals(username) && e.getEntregue() == false){
+                l.add(e.clone());
+            }
+        }
+        return l;
+    }
+
+    public List<Encomenda> listOfEncomendasPorAceitar(String username){
+        List<Encomenda> l = new ArrayList<>();
+        for(Encomenda e: this.getEncomendas().values()){
+            if(this.getAceites().contains(e.getCodigo()) == false && e.getLoja().equals(username)){
+                l.add(e.clone());
+            }
+        }
+        return l;
+    }
+
+    public List<Encomenda> listOfEncomendasFila(String username){
+        List<Encomenda> l = new ArrayList<>();
+        Utilizador u = (Utilizador) this.users.get(username).clone();
+        for(Encomenda e: this.getEncomendas().values()){
+            if(!(this.getAceites().contains(e.getCodigo())) && e.getUtilizador().equals(username)){
                 l.add(e.clone());
             }
         }

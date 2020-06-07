@@ -7,25 +7,6 @@ import java.util.stream.Collectors;
 import java.io.*;
 public class TrazAqui implements Serializable{
     /**
-     * Gestao do map de comparadores.
-     * A classe TrazAqui guarda os diferentes comparadores que as instancias
-     * desta classe podem invocar para ordenar as suas instancias de User.
-     * Como é suposto que estes comparadores possam ser utilizados por todos os users(todas as
-     * instâncias de TrazAqui) faz sentido guardar numa variável de classe
-     */
-    private static Map<String,Comparator<User>> comparadores = new HashMap<>();
-
-    public static void juntaOrdenacao(String nome, Comparator<User> ordem)
-    {
-        comparadores.put(nome,ordem);
-    }
-
-    public static Comparator<User> getOrdem(String nome)
-    {
-        return comparadores.get(nome);
-    }
-
-    /**
      * Nome do user
      */
     private String nome;
@@ -251,6 +232,26 @@ public class TrazAqui implements Serializable{
         }
     }
 
+    public void classifTransportador(String username, String cod, int classi) throws EncomendaInexistenteException, UserInexistenteException {
+        Transportador t = (Transportador) this.users.get(this.getEncomenda(cod).getTransportador());
+        if(!(t.getClassificacoes().containsKey(username))) {
+            t.addClassificacao(username, classi);
+        }
+        else{
+            throw new UserInexistenteException("O utilizador já classificou");
+        }
+    }
+
+    public void classifLoja(String username, String cod, int classi) throws EncomendaInexistenteException, UserInexistenteException {
+        Loja l = (Loja) this.users.get(this.getEncomenda(cod).getLoja());
+        if(!(l.getClassificacao().containsKey(username))) {
+            l.addClassificacao(username, classi);
+        }
+        else{
+            throw new UserInexistenteException("O utilizador já classificou");
+        }
+    }
+
     public boolean contemLoja(String username){
         if (this.users.containsKey(username)){
             return true;
@@ -340,6 +341,22 @@ public class TrazAqui implements Serializable{
         return l;
     }
 
+    public List<Encomenda> listOfEncomendasHistorico(String username){
+        List<Encomenda> l = new ArrayList<>();
+        for(Encomenda e: this.getEncomendas().values()){
+            if(username.charAt(0) == 'u' && this.encomendas.get(e.getCodigo()).getUtilizador().equals(username)){
+                l.add(e.clone());
+            }
+            if((username.charAt(0) == 'v' || username.charAt(0) == 't') && this.encomendas.get(e.getCodigo()).getTransportador().equals(username)){
+                l.add(e.clone());
+            }
+            if(username.charAt(0) == 'l' && this.encomendas.get(e.getCodigo()).getLoja().equals(username)){
+                l.add(e.clone());
+            }
+        }
+        return l;
+    }
+
     public List<Encomenda> listOfEncomendasPorEntregar(String username){
         List<Encomenda> l = new ArrayList<>();
         for(Encomenda e: this.getEncomendas().values()){
@@ -362,9 +379,20 @@ public class TrazAqui implements Serializable{
 
     public List<Encomenda> listOfEncomendasFila(String username){
         List<Encomenda> l = new ArrayList<>();
-        Utilizador u = (Utilizador) this.users.get(username).clone();
+        LojaComFila lf = (LojaComFila) this.users.get(username).clone();
         for(Encomenda e: this.getEncomendas().values()){
-            if(!(this.getAceites().contains(e.getCodigo())) && e.getUtilizador().equals(username)){
+            if(lf.getFila().contains(e.getCodigo()) && e.getUtilizador().equals(username)){
+                l.add(e.clone());
+            }
+        }
+        return l;
+    }
+
+    public List<Encomenda> listOfEncomendasProntas(String username){
+        List<Encomenda> l = new ArrayList<>();
+        Loja lf = (Loja) this.users.get(username).clone();
+        for(Encomenda e: this.getEncomendas().values()){
+            if(lf.getEncomendas().containsKey(e.getCodigo()) && e.getUtilizador().equals(username)){
                 l.add(e.clone());
             }
         }
@@ -394,6 +422,28 @@ public class TrazAqui implements Serializable{
             String s = "";
             s = "Codigo: " + e.getCodigo() + "\n" + "Hora do pedido: " + e.getHoraI() + "\n" + "Peso do pedido" + e.getPeso() + "\n" + "Pedido medico?: " + e.getMedica() + "\n" + "Loja: " + e.getLoja() + "\n" + "Coordenadas de entrega: " + this.users.get(e.getUtilizador()).getPosicao() + "\n" + "Empresas interessadas" + e.getPropostas() + "\n";
             end.add(s);
+        }
+        return end;
+    }
+
+    public List<String> listOfEncomendasHistoricoInfo(String username, Iterable<Encomenda> it){
+        List<String> end = new ArrayList<>();
+        for(Encomenda e: it){
+            if(username.charAt(0) == 'u' && e.getUtilizador().equals(username)){
+                String s = "";
+                s = "Codigo: " + e.getCodigo() + "\n" + "Hora do pedido: " + e.getHoraI() + "\n" + "Peso do pedido" + e.getPeso() + "\n" + "Pedido medico?: " + e.getMedica() + "\n" + "Loja: " + e.getLoja() + "\n" + "Coordenadas de entrega: " + this.users.get(e.getUtilizador()).getPosicao() + "\n" + "Empresas interessadas" + e.getPropostas() + "\n";
+                end.add(s);
+            }
+            if((username.charAt(0) == 'v' || username.charAt(0) == 't') && e.getTransportador().equals(username)){
+                String s = "";
+                s = "Codigo: " + e.getCodigo() + "\n" + "Hora do pedido: " + e.getHoraI() + "\n" + "Peso do pedido" + e.getPeso() + "\n" + "Pedido medico?: " + e.getMedica() + "\n" + "Loja: " + e.getLoja() + "\n" + "Coordenadas de entrega: " + this.users.get(e.getUtilizador()).getPosicao() + "\n" + "Empresas interessadas" + e.getPropostas() + "\n";
+                end.add(s);
+            }
+            if(username.charAt(0) == 'l' && e.getLoja().equals(username)){
+                String s = "";
+                s = "Codigo: " + e.getCodigo() + "\n" + "Hora do pedido: " + e.getHoraI() + "\n" + "Peso do pedido" + e.getPeso() + "\n" + "Pedido medico?: " + e.getMedica() + "\n" + "Loja: " + e.getLoja() + "\n" + "Coordenadas de entrega: " + this.users.get(e.getUtilizador()).getPosicao() + "\n" + "Empresas interessadas" + e.getPropostas() + "\n";
+                end.add(s);
+            }
         }
         return end;
     }
@@ -471,9 +521,37 @@ public class TrazAqui implements Serializable{
         return t;
     }
 
-    public Set<User> ordenarUsers(String criterio) {
-        TreeSet<User> r = ordenarUsers(getOrdem(criterio));
-        return r;
+    public List<Encomenda> ordenarEncomendaData(){
+        List<Encomenda> lst = new ArrayList<>();
+        for(Encomenda e: this.getEncomendas().values()){
+            if(e.getHoraF().equals(e.getHoraI()) == false) {
+                lst.add(e.clone());
+            }
+        }
+        lst.sort(new ComparadorDataEncomenda());
+        return lst;
+    }
+
+    public List<Encomenda> ordenarEncomendaPeso(){
+        List<Encomenda> lst = new ArrayList<>();
+        for(Encomenda e: this.getEncomendas().values()){
+            if(e.getHoraF().equals(e.getHoraI()) == false) {
+                lst.add(e.clone());
+            }
+        }
+        lst.sort(new ComparadorPesoEncomenda());
+        return lst;
+    }
+
+    public List<Encomenda> ordenarEncomendaPreco(){
+        List<Encomenda> lst = new ArrayList<>();
+        for(Encomenda e: this.getEncomendas().values()){
+            if(e.getHoraF().equals(e.getHoraI()) == false) {
+                lst.add(e.clone());
+            }
+        }
+        lst.sort(new ComparadorPrecoEncomenda());
+        return lst;
     }
 
     public List<Loja> ordenaLojasClass(){
@@ -489,6 +567,105 @@ public class TrazAqui implements Serializable{
         for(Loja l: this.listOfLojas()){
             conj.add(l.clone()); }
         return conj;
+    }
+
+    public List<String> ordenarTransportadoraPreco(String cod){
+        List<String> lst = this.encomendas.get(cod).getPropostas();
+        lst.sort((o1,o2) -> {
+            Empresa e1 = (Empresa) this.users.get(o1);
+            Empresa e2 = (Empresa) this.users.get(o2);
+            return (int)(this.custoViagem(cod,e1)-this.custoViagem(cod,e2));
+        });
+        return lst;
+    }
+
+    public List<Encomenda> ordenarEncomendaDataI(String username){
+        List<Encomenda> lst = listOfEncomendasPorEntregar(username);
+        lst.sort(new ComparadorDataEncomendaI());
+        return lst;
+    }
+    public List<Encomenda> ordenarEncomendaDataIT(String username){
+        List<Encomenda> lst = listOfEncomendas(username);
+        lst.sort(new ComparadorDataEncomendaI());
+        return lst;
+    }
+
+    public List<Encomenda> filtrarEncomendaUser(String username){
+        List<Encomenda> lst = new ArrayList<>();
+        for(Encomenda e: this.encomendas.values()){
+            if(username.charAt(0) == 'u'){
+                return lst;
+            }
+            if((username.charAt(0) == 'v' || username.charAt(0) == 't') && this.encomendas.get(e.getCodigo()).getTransportador().equals(username)){
+                lst.add(e.clone());
+            }
+            if(username.charAt(0) == 'l' && this.encomendas.get(e.getCodigo()).getLoja().equals(username)){
+                lst.add(e.clone());
+            }
+        }
+        return lst;
+    }
+
+    public List<Encomenda> filtrarEncomendaMedica(){
+        List<Encomenda> lst = new ArrayList<>();
+        for(Encomenda e: this.encomendas.values()){
+            if(e.getMedica()){
+                lst.add(e.clone());
+            }
+        }
+        return lst;
+    }
+
+    public List<Encomenda> filtrarEncomendaMedica(String username){
+        List<Encomenda> lst = listOfEncomendasPorEntregar(username);
+        List<Encomenda> end = new ArrayList<>();
+        for(Encomenda e: lst){
+            if(e.getMedica()){
+                end.add(e.clone());
+            }
+        }
+        return end;
+    }
+
+    public List<Encomenda> filtrarEncomendaMedicaT(String username){
+        List<Encomenda> lst = listOfEncomendas(username);
+        List<Encomenda> end = new ArrayList<>();
+        for(Encomenda e: lst){
+            if(e.getMedica()){
+                end.add(e.clone());
+            }
+        }
+        return end;
+    }
+
+    public List<Encomenda> filtrarEncomendaDia(){
+        List<Encomenda> lst = new ArrayList<>();
+        for(Encomenda e: this.encomendas.values()){
+            if(e.getHoraF().isAfter(LocalDateTime.now().minusDays(1))){
+                lst.add(e.clone());
+            }
+        }
+        return lst;
+    }
+
+    public List<Encomenda> filtrarEncomendaSemana(){
+        List<Encomenda> lst = new ArrayList<>();
+        for(Encomenda e: this.encomendas.values()){
+            if(e.getHoraF().isAfter(LocalDateTime.now().minusWeeks(1))){
+                lst.add(e.clone());
+            }
+        }
+        return lst;
+    }
+
+    public List<Encomenda> filtrarEncomendaMes(){
+        List<Encomenda> lst = new ArrayList<>();
+        for(Encomenda e: this.encomendas.values()){
+            if(e.getHoraF().isAfter(LocalDateTime.now().minusMonths(1))){
+                lst.add(e.clone());
+            }
+        }
+        return lst;
     }
 
     public String toString(){

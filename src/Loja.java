@@ -73,6 +73,11 @@ public abstract class Loja extends User
 
     public void removeEncomenda(String s){this.encomendas.remove(s);}
 
+    public void addClassificacao(String name, int classificacao)
+    {
+        this.classificacao.put(name,classificacao);
+    }
+
     public double classMedia(){
         double sum = 0;
         int i = 0;

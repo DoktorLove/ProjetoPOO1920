@@ -9,7 +9,7 @@ public class TrazAquiApp{
 
     private Menu init, difUsers, menuUtil, menuLoja, menuTransportadora, menuEncomenda,
             menuEncomendaPorEntregar, menuHistoricoEncomendas, menuEstatisticas,
-            menuPropostaTransporte;
+            menuPropostaTransporte, menuDetalhesEncomenda;
 
     public static void main(String[] args){
         new TrazAquiApp().run();
@@ -29,7 +29,8 @@ public class TrazAquiApp{
         String[] opcoesMenuTransportador ={"Encomendas disponiveis",
                                             "Confirmar entrega de encomenda",
                                             "Historico de encomendas",
-                                            "Procurar utilizadores"};
+                                            "Procurar utilizadores",
+                                            "Total dinheiro faturado"};
         String[] opcoesMenuLoja ={"Aceitar encomendas",
                                     "Indicar encomenda pronta",
                                     "Encomendas por entregar",
@@ -44,16 +45,14 @@ public class TrazAquiApp{
                                         "Filtrar lojas com fila",
                                         "Filtrar lojas sem fila"};
         String[] opcoesEncomendasPorEntregar = {"Propostas de transporte de encomenda",
-                                                "Ordenar por distancia a percorrer",
                                                 "Ordenar por tempo de pedido",
                                                 "Filtrar encomenda médica"};
-        String[] opcoesMenuHistorico = {"Ordenar encomendas por data de entrega",
+        String[] opcoesMenuHistorico = {"Ver detalhes de encomenda encomenda",
+                                        "Ordenar encomendas por data de entrega",
                                         "Ordenar encomendas por peso",
                                         "Ordenar encomendas por preço",
-                                        "Filtrar encomendas por loja",
-                                        "Filtrar encomendas por transportador",
+                                        "Filtrar encomendas por user",
                                         "Filtrar encomendas medicinais",
-                                        "Filtrar encomendas não entregues",
                                         "Encomendas feitas hoje",
                                         "Encomendas feitas esta semana",
                                         "Encomendas feitas este mês"};
@@ -62,6 +61,8 @@ public class TrazAquiApp{
                                         "Top 10 empresas com mais kms"};
         String[] opcoesPropostasTransporte = {"Aceitar proposta de tranporte",
                                                 "Ordenar por preço proposto"};
+        String[] opcoesDetalhesEncomenda = {"Classificar transportador",
+                                            "Classificar loja"};
         this.init = new Menu(opcoesInit);
         this.difUsers = new Menu(opcoesDifUsers);
         this.menuUtil = new Menu(opcoesMenuUtil);
@@ -72,6 +73,7 @@ public class TrazAquiApp{
         this.menuHistoricoEncomendas = new Menu(opcoesMenuHistorico);
         this.menuEstatisticas = new Menu(opcoesEstatisticas);
         this.menuPropostaTransporte = new Menu(opcoesPropostasTransporte);
+        this.menuDetalhesEncomenda = new Menu(opcoesDetalhesEncomenda);
         try {
             this.logNegocio = TrazAqui.carregaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
         }
@@ -106,7 +108,7 @@ public class TrazAquiApp{
 
     private void run(){
         this.logNegocio.verificaAceites();
-        System.out.println(this.logNegocio.toString());
+        //System.out.println(this.logNegocio.toString());
         do {
             init.executa();
             switch (init.getOpcao()) {
@@ -312,6 +314,7 @@ public class TrazAquiApp{
                     break;
                 case 4:
                     //historico de encomendas
+                    historicoEncomendas(username);
                     break;
                 case 5:
                     //estatisticas
@@ -412,7 +415,7 @@ public class TrazAquiApp{
         } while (menuEncomenda.getOpcao()!=0);
     }
 
-    public void menuDeTransportador(String username) throws EncomendaInexistenteException, IOException {
+    public void menuDeTransportador(String username) throws EncomendaInexistenteException, IOException, UserInexistenteException {
         Scanner scin = new Scanner(System.in);
         do {
             //print com as encomendas que transporta no momento
@@ -434,9 +437,13 @@ public class TrazAquiApp{
                     break;
                 case 3:
                     //historico de encomendas
+                    historicoEncomendas(username);
                     break;
                 case 4:
                     //procurar utilizadores
+                    break;
+                case 5:
+                    //total faturado pela empresa
                     break;
             }
         } while (menuTransportadora.getOpcao()!=0);
@@ -467,13 +474,18 @@ public class TrazAquiApp{
                     this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
                     break;
                 case 2:
-                    //ordenar por distancia
+                    // ordenar por tempo do pedido
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.ordenarEncomendaDataIT(username))){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
                     break;
                 case 3:
-                    // ordenar por tempo do pedido
-                    break;
-                case 4:
                     //filtrar encomendas medicas
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.filtrarEncomendaMedicaT(username))){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
                     break;
             }
         } while (menuEncomendaPorEntregar.getOpcao()!=0);
@@ -482,11 +494,11 @@ public class TrazAquiApp{
 
     public void menuDeEncomendasPorEntregar(String username) throws IOException {
         Scanner scin = new Scanner(System.in);
+        StringBuilder encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+        for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasPorEntregar(username))){
+            encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+        }
         do {
-            StringBuilder encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
-            for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasPorEntregar(username))){
-                encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
-            }
             System.out.println(encomendas);
             menuEncomendaPorEntregar.executa();
             switch (menuEncomendaPorEntregar.getOpcao()) {
@@ -496,13 +508,18 @@ public class TrazAquiApp{
                     menuDePropostasTransporte(cod,username);
                     break;
                 case 2:
-                    //ordenar por distancia a percorrer
+                    //ordenar por tempo de pedido
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.ordenarEncomendaDataI(username))){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
                     break;
                 case 3:
-                    //ordenar por tempo de pedido
-                    break;
-                case 4:
                     //Filtrar encomendas medicas
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.filtrarEncomendaMedica(username))){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
                     break;
             }
         } while (menuEncomendaPorEntregar.getOpcao()!=0);
@@ -510,11 +527,11 @@ public class TrazAquiApp{
 
     public void menuDePropostasTransporte(String cod, String username) throws IOException {
         Scanner scin = new Scanner(System.in);
+        StringBuilder encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+        for(String ln: this.logNegocio.listOfTransportadoresInfo(cod,this.logNegocio.listOfPropostas(cod))){
+            encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+        }
         do {
-            StringBuilder encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
-            for(String ln: this.logNegocio.listOfTransportadoresInfo(cod,this.logNegocio.listOfPropostas(cod))){
-                encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
-            }
             System.out.println(encomendas);
             menuPropostaTransporte.executa();
             switch (menuPropostaTransporte.getOpcao()) {
@@ -526,6 +543,10 @@ public class TrazAquiApp{
                     break;
                 case 2:
                     //ordenar por preço proposto
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfTransportadoresInfo(cod,this.logNegocio.ordenarTransportadoraPreco(cod))){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
                     break;
             }
         } while (menuPropostaTransporte.getOpcao()!=0);
@@ -573,23 +594,145 @@ public class TrazAquiApp{
                 case 3:
                     //encomendas por entregar
                     StringBuilder encomendas2 = new StringBuilder("*** Encomendas por Entregar ***\n");
-                    for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasFila(username))){
+                    for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasProntas(username))){
                         encomendas2.append("\n").append(ln).append("\n").append("*** ***").append("\n");
                     }
                     System.out.println(encomendas2);
                     break;
                 case 4:
                     //encomendas em fila de espera
+                    if(this.logNegocio.temFila(username)){
+                        StringBuilder encomendas3 = new StringBuilder("*** Encomendas por Entregar ***\n");
+                        for (String ln : this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasFila(username))) {
+                            encomendas3.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                        }
+                        System.out.println(encomendas3);
+                    }
+                    else{
+                        System.out.println("A sua loja não tem fila");
+                    }
                     break;
                 case 5:
                     //historico de encomendas
+                    historicoEncomendas(username);
                     break;
                 case 6:
                     //Procurar Utilizador
                     break;
             }
-            System.out.println(this.logNegocio.toString());
+            //System.out.println(this.logNegocio.toString());
         } while (menuLoja.getOpcao()!=0);
+    }
+
+    public void historicoEncomendas(String username) throws EncomendaInexistenteException, UserInexistenteException {
+        Scanner scin = new Scanner(System.in);
+        StringBuilder encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+        for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasHistorico(username))){
+            encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+        }
+        do {
+            System.out.println(encomendas);
+            menuHistoricoEncomendas.executa();
+            switch (menuHistoricoEncomendas.getOpcao()) {
+                case 1:
+                    //detalhes
+                    System.out.println("Insira o código da encomenda: ");
+                    String cod = scin.nextLine();
+                    detalhesEncomenda(username,cod);
+                    break;
+                case 2:
+                    //ordenar por data
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasHistoricoInfo(username,this.logNegocio.ordenarEncomendaData())){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
+                    break;
+                case 3:
+                    //ordenar por peso
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasHistoricoInfo(username,this.logNegocio.ordenarEncomendaPeso())){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
+                    break;
+                case 4:
+                    //ordenar por preço
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasHistoricoInfo(username,this.logNegocio.ordenarEncomendaPreco())){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
+                    break;
+                case 5:
+                    //filtrar por user
+                    System.out.println("Insira o user que deseja filtrar");
+                    String username2 = scin.nextLine();
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasHistoricoInfo(username,this.logNegocio.filtrarEncomendaUser(username2))){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
+                    break;
+                case 6:
+                    //fitrar encomendas medicas
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasHistoricoInfo(username,this.logNegocio.filtrarEncomendaMedica())){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
+                    break;
+                case 7:
+                    //encomendas entregue hoje
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasHistoricoInfo(username,this.logNegocio.filtrarEncomendaDia())){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
+                    break;
+                case 8:
+                    //encomendas entregues esta semana
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasHistoricoInfo(username,this.logNegocio.filtrarEncomendaSemana())){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
+                    break;
+                case 9:
+                    //encomendas entregues este mes
+                    encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    for(String ln: this.logNegocio.listOfEncomendasHistoricoInfo(username,this.logNegocio.filtrarEncomendaMes())){
+                        encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+                    }
+                    break;
+            }
+            //System.out.println(this.logNegocio.toString());
+        } while (menuHistoricoEncomendas.getOpcao()!=0);
+    }
+
+    public void detalhesEncomenda(String username, String codigo) throws EncomendaInexistenteException, UserInexistenteException {
+        Scanner scin = new Scanner(System.in);
+        do {
+            System.out.println(this.logNegocio.getEncomendaString(codigo));
+            menuDetalhesEncomenda.executa();
+            switch (menuDetalhesEncomenda.getOpcao()) {
+                case 1:
+                    //classificar transportador
+                    System.out.println("Insira a classificação[1-5]: ");
+                    int classit = Integer.parseInt(scin.nextLine());
+                    if (classit < 6 && classit > 0) {
+                        this.logNegocio.classifTransportador(username, codigo, classit);
+                    } else {
+                        System.out.println("Numero invalido");
+                    }
+                    break;
+                case 2:
+                    //classificar loja
+                    System.out.println("Insira o código da encomenda[1-5]: ");
+                    int classil = Integer.parseInt(scin.nextLine());
+                    if (classil < 6 && classil > 0) {
+                    this.logNegocio.classifLoja(username, codigo, classil);
+                    }
+                    else{
+                    System.out.println("Numero invalido");
+                    }
+                    break;
+            }
+            //System.out.println(this.logNegocio.toString());
+        } while (menuDetalhesEncomenda.getOpcao()!=0);
     }
 
 }

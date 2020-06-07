@@ -9,7 +9,7 @@ public class TrazAquiApp{
 
     private Menu init, difUsers, menuUtil, menuLoja, menuTransportadora, menuEncomenda,
             menuEncomendaPorEntregar, menuHistoricoEncomendas, menuEstatisticas,
-            menuPropostaTransporte, menuDetalhesEncomenda;
+            menuPropostaTransporte, menuDetalhesEncomenda, menuFaturado;
 
     public static void main(String[] args){
         new TrazAquiApp().run();
@@ -63,6 +63,7 @@ public class TrazAquiApp{
                                                 "Ordenar por preço proposto"};
         String[] opcoesDetalhesEncomenda = {"Classificar transportador",
                                             "Classificar loja"};
+        String[] opcoesDinheiroFacturado = {"Hoje","Esta semana","Este mes","Sempre"};
         this.init = new Menu(opcoesInit);
         this.difUsers = new Menu(opcoesDifUsers);
         this.menuUtil = new Menu(opcoesMenuUtil);
@@ -74,6 +75,7 @@ public class TrazAquiApp{
         this.menuEstatisticas = new Menu(opcoesEstatisticas);
         this.menuPropostaTransporte = new Menu(opcoesPropostasTransporte);
         this.menuDetalhesEncomenda = new Menu(opcoesDetalhesEncomenda);
+        this.menuFaturado = new Menu(opcoesDinheiroFacturado);
         try {
             this.logNegocio = TrazAqui.carregaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
         }
@@ -318,6 +320,7 @@ public class TrazAquiApp{
                     break;
                 case 5:
                     //estatisticas
+                    estatisticas();
                     break;
             }
         } while (menuUtil.getOpcao()!=0);
@@ -441,12 +444,39 @@ public class TrazAquiApp{
                     break;
                 case 4:
                     //procurar utilizadores
+                    estatisticas();
                     break;
                 case 5:
                     //total faturado pela empresa
+                    if(this.logNegocio.eEmpresa(username)){
+                       dinheiroFat(username);
+                    }
+                    else{
+                        System.out.println("Não tem acesso a este menu");
+                    }
                     break;
             }
         } while (menuTransportadora.getOpcao()!=0);
+    }
+
+    public void dinheiroFat(String username){
+        do{
+            menuFaturado.executa();
+            switch(menuFaturado.getOpcao()){
+                case 1:
+                    System.out.println("Hoje faturou: " + this.logNegocio.saldoHoje(username));
+                    break;
+                case 2:
+                    System.out.println("Esta semana faturou: " + this.logNegocio.saldoSemana(username));
+                    break;
+                case 3:
+                    System.out.println("Este mes faturou: " + this.logNegocio.saldoMes(username));
+                    break;
+                case 4:
+                    System.out.println("Desde o inicio, faturou: " + this.logNegocio.saldoSempre(username));
+                    break;
+            }
+        }while(menuFaturado.getOpcao()!=0);
     }
 
     public void encomendasDisponiveis(String username) throws IOException {
@@ -618,6 +648,7 @@ public class TrazAquiApp{
                     break;
                 case 6:
                     //Procurar Utilizador
+                    estatisticas();
                     break;
             }
             //System.out.println(this.logNegocio.toString());
@@ -733,6 +764,29 @@ public class TrazAquiApp{
             }
             //System.out.println(this.logNegocio.toString());
         } while (menuDetalhesEncomenda.getOpcao()!=0);
+    }
+
+    public void estatisticas(){
+        do {
+            menuEstatisticas.executa();
+            switch (menuEstatisticas.getOpcao()){
+                case 1:
+                    System.out.println("Top 10 utilizadores por encomendas: ");
+                    System.out.println(this.logNegocio.top10Utilizadores().toString());
+                    break;
+                case 2:
+                    //top10 voluntarios
+                    System.out.println("Top 10 Voluntarios com mais kms: ");
+                    System.out.println(this.logNegocio.top10Voluntarios().toString());
+                    break;
+                case 3:
+                    //top10 empresas
+                    System.out.println("Top 10 empresas com mais kms: ");
+                    System.out.println(this.logNegocio.top10Empresas().toString());
+                    break;
+            }
+            //System.out.println(this.logNegocio.toString());
+        } while (menuEstatisticas.getOpcao()!=0);
     }
 
 }

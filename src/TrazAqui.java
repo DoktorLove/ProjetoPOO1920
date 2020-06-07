@@ -165,6 +165,13 @@ public class TrazAqui implements Serializable{
         return h;
     }
 
+    public boolean eEmpresa(String username){
+        if(this.users.get(username) instanceof Empresa){
+            return true;
+        }
+        return false;
+    }
+
     public void realizaEncomenda(String codEnc, String usernameV){
         this.encomendas.get(codEnc).setTransportador(usernameV);
         ((Loja) this.users.get(this.encomendas.get(codEnc).getLoja())).removeEncomenda(codEnc);
@@ -648,6 +655,17 @@ public class TrazAqui implements Serializable{
         return lst;
     }
 
+    public double saldoHoje(String username){
+        Empresa em = (Empresa) this.users.get(username);
+        double saldo = 0.0;
+        for(Encomenda e: this.encomendas.values()){
+            if(e.getHoraF().isAfter(LocalDateTime.now().minusDays(1)) && e.getUtilizador().equals(username)){
+                saldo = saldo + custoViagem(e.getCodigo(),em);
+            }
+        }
+        return saldo;
+    }
+
     public List<Encomenda> filtrarEncomendaSemana(){
         List<Encomenda> lst = new ArrayList<>();
         for(Encomenda e: this.encomendas.values()){
@@ -658,6 +676,17 @@ public class TrazAqui implements Serializable{
         return lst;
     }
 
+    public double saldoSemana(String username){
+        Empresa em = (Empresa) this.users.get(username);
+        double saldo = 0.0;
+        for(Encomenda e: this.encomendas.values()){
+            if(e.getHoraF().isAfter(LocalDateTime.now().minusWeeks(1)) && e.getUtilizador().equals(username)){
+                saldo = saldo + custoViagem(e.getCodigo(),em);
+            }
+        }
+        return saldo;
+    }
+
     public List<Encomenda> filtrarEncomendaMes(){
         List<Encomenda> lst = new ArrayList<>();
         for(Encomenda e: this.encomendas.values()){
@@ -666,6 +695,133 @@ public class TrazAqui implements Serializable{
             }
         }
         return lst;
+    }
+
+    public double saldoMes(String username){
+        Empresa em = (Empresa) this.users.get(username);
+        double saldo = 0.0;
+        for(Encomenda e: this.encomendas.values()){
+            if(e.getHoraF().isAfter(LocalDateTime.now().minusMonths(1)) && e.getUtilizador().equals(username)){
+                saldo = saldo + custoViagem(e.getCodigo(),em);
+            }
+        }
+        return saldo;
+    }
+
+    public double saldoSempre(String username){
+        Empresa em = (Empresa) this.users.get(username);
+        double saldo = 0.0;
+        for(Encomenda e: this.encomendas.values()){
+            if(e.getUtilizador().equals(username)){
+                saldo = saldo + custoViagem(e.getCodigo(),em);
+            }
+        }
+        return saldo;
+    }
+
+    public List<String> top10Utilizadores(){
+        List<String> lista = new ArrayList<>();
+        for(User u: this.users.values()){
+            if(u instanceof Utilizador){
+                lista.add(u.getUsername());
+            }
+        }
+        lista.sort(((o1, o2) -> {
+            int u1 = 0;
+            int u2 = 0;
+            for(Encomenda e: this.encomendas.values()){
+                if(e.getUtilizador().equals(o1)){
+                    u1 += 1;
+                }
+                if(e.getUtilizador().equals(o2)){
+                    u2 += 1;
+                }
+            }
+            return u2-u1;
+        }));
+        List<String> end = new ArrayList<>();
+        int i = 0;
+        while(i < 10){
+            end.add(lista.remove(0));
+            i+=1;
+        }
+        return end;
+    }
+
+    public List<String> top10Voluntarios(){
+        List<String> lista = new ArrayList<>();
+        for(User u: this.users.values()){
+            if(u instanceof Voluntario){
+                lista.add(u.getUsername());
+            }
+        }
+        lista.sort(((o1, o2) -> {
+            double distancia1 = 0.0;
+            double distancia2 = 0.0;
+            Localizacao le1 = this.users.get(o1).getPosicao();
+            Localizacao le2 = this.users.get(o2).getPosicao();
+            for(Encomenda e: this.encomendas.values()){
+                Localizacao lu = this.users.get(e.getUtilizador()).getPosicao();
+                Localizacao ll = this.users.get(e.getLoja()).getPosicao();
+                if(e.getTransportador().equals(o1)) {
+                    distancia1 = distancia1 + ((Transportador) (this.users.get(le1))).distanciaA(ll) + ((Transportador) (this.users.get(le1))).distanciaA(lu);
+                }
+                if(e.getTransportador().equals(o2)) {
+                    distancia2 = distancia2+ ((Transportador) (this.users.get(le2))).distanciaA(ll) + ((Transportador) (this.users.get(le2))).distanciaA(lu);
+                }
+            }
+            return (int)(distancia2-distancia1);
+        }));
+        List<String> end = new ArrayList<>();
+        int i = 0;
+        while(i < 10){
+            if(lista.size()>0) {
+                end.add(lista.remove(0));
+            }
+            else{
+                end.add("N/A");
+            }
+            i+=1;
+        }
+        return end;
+    }
+
+    public List<String> top10Empresas(){
+        List<String> lista = new ArrayList<>();
+        for(User u: this.users.values()){
+            if(u instanceof Empresa){
+                lista.add(u.getUsername());
+            }
+        }
+        lista.sort(((o1, o2) -> {
+            double distancia1 = 0.0;
+            double distancia2 = 0.0;
+            Localizacao le1 = this.users.get(o1).getPosicao();
+            Localizacao le2 = this.users.get(o2).getPosicao();
+            for(Encomenda e: this.encomendas.values()){
+                Localizacao lu = this.users.get(e.getUtilizador()).getPosicao();
+                Localizacao ll = this.users.get(e.getLoja()).getPosicao();
+                if(e.getTransportador().equals(o1)) {
+                    distancia1 = distancia1 + ((Transportador) (this.users.get(le1))).distanciaA(ll) + ((Transportador) (this.users.get(le1))).distanciaA(lu);
+                }
+                if(e.getTransportador().equals(o2)) {
+                    distancia2 = distancia2+ ((Transportador) (this.users.get(le2))).distanciaA(ll) + ((Transportador) (this.users.get(le2))).distanciaA(lu);
+                }
+            }
+            return (int)(distancia2-distancia1);
+        }));
+        List<String> end = new ArrayList<>();
+        int i = 0;
+        while(i < 10){
+            if(lista.size()>0) {
+                end.add(lista.remove(0));
+            }
+            else {
+                end.add("N/A");
+            }
+            i+=1;
+        }
+        return end;
     }
 
     public String toString(){

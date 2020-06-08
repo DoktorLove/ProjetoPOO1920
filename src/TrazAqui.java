@@ -260,13 +260,15 @@ public class TrazAqui implements Serializable{
     }
 
     public boolean contemLoja(String username){
-        if (this.users.containsKey(username)){
-            return true;
+        if (this.users.containsKey(username) && this.users.get(username) instanceof Loja){
+            return this.listOfLojas().stream().filter(o->o.getUsername().equals(username)).findFirst().isPresent();
         }
         else{
             return false;
         }
     }
+
+
 
     public String geraCodEncomenda(){
         String cd = Collections.max(this.getEncomendas().keySet());
@@ -328,7 +330,8 @@ public class TrazAqui implements Serializable{
         List<Loja> l = new ArrayList<>();
         for(User u: this.getUsersAsList()) {
             if(u instanceof Loja) {
-                l.add(((Loja) u).clone());
+                if(!(u instanceof LojaComFila && ((LojaComFila) u).getFila().size() >= ((LojaComFila) u).getTamanho()))
+                    l.add(((Loja) u).clone());
             }
         }
         return l;
@@ -412,6 +415,25 @@ public class TrazAqui implements Serializable{
             l.add(s);
         }
         return l;
+    }
+
+    public List<Encomenda> listOfEncomendasTransportador(String username){
+        List<Encomenda> l = new ArrayList<>();
+        Transportador lf = (Transportador) this.users.get(username).clone();
+        for(Encomenda e: this.getEncomendas().values()){
+            if(lf.getEncomendas().containsKey(e.getCodigo()) && e.getUtilizador().equals(username)){
+                l.add(e.clone());
+            }
+        }
+        return l;
+    }
+
+    public boolean contemEncomenda(List<Encomenda> lst,String username, String cod){
+        return lst.stream().filter(o->o.getCodigo().equals(cod)).findFirst().isPresent();
+    }
+
+    public boolean contemProposta(List<Encomenda> lst,String username, String cod, String empresa){
+        return lst.stream().filter(o->o.equals(empresa)).findFirst().isPresent();
     }
 
     public String getEncomendaString(String num) throws EncomendaInexistenteException {

@@ -378,7 +378,7 @@ public class TrazAquiApp{
                         System.out.println("A sua encomenda foi realizada, muito obrigado");
                     }
                     else{
-                        throw new UserInexistenteException("Esta Loja não existe");
+                        System.out.println("A loja não pode ser escolhida");
                     }
                     break;
                 case 2:
@@ -422,6 +422,11 @@ public class TrazAquiApp{
         Scanner scin = new Scanner(System.in);
         do {
             //print com as encomendas que transporta no momento
+            StringBuilder encomendas = new StringBuilder("*** Encomendas a transportar ***\n");
+            for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasTransportador(username))){
+                encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
+            }
+            System.out.println(encomendas);
             menuTransportadora.executa();
             switch (menuTransportadora.getOpcao()) {
                 case 1:
@@ -430,11 +435,16 @@ public class TrazAquiApp{
                 case 2:
                     System.out.println("Insira o código da encomenda: ");
                     String cod = scin.nextLine();
-                    System.out.println(this.logNegocio.getEncomendaString(cod));
-                    System.out.println("Deseja confirmar a entrega?[true/false]: ");
-                    boolean b = Boolean.parseBoolean(scin.nextLine());
-                    if(b){
-                        this.logNegocio.confirmarEntEncomenda(cod,username);
+                    if(this.logNegocio.contemEncomenda(this.logNegocio.listOfEncomendasTransportador(username),username,cod)) {
+                        System.out.println(this.logNegocio.getEncomendaString(cod));
+                        System.out.println("Deseja confirmar a entrega?[true/false]: ");
+                        boolean b = Boolean.parseBoolean(scin.nextLine());
+                        if (b) {
+                            this.logNegocio.confirmarEntEncomenda(cod, username);
+                        }
+                    }
+                    else{
+                        System.out.println("Opção errada");
                     }
                     this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
                     break;
@@ -493,13 +503,23 @@ public class TrazAquiApp{
                     if(username.charAt(0) == 'v'){
                         System.out.println("Insira o código da encomenda: ");
                         String cod = scin.nextLine();
-                        this.logNegocio.realizaEncomenda(cod, username);
+                        if(this.logNegocio.contemEncomenda(this.logNegocio.listOfEncomendas(username),username,cod)) {
+                            this.logNegocio.realizaEncomenda(cod, username);
+                        }
+                        else{
+                            System.out.println("Codigo invalido");
+                        }
                     }
                     if(username.charAt(0) == 't'){
                         System.out.println("Insira o código da encomenda para fazer proposta: ");
                         String cod = scin.nextLine();
                         //System.out.println(cod);
-                        this.logNegocio.realizaProposta(cod,username);
+                        if(this.logNegocio.contemEncomenda(this.logNegocio.listOfEncomendas(username),username,cod)) {
+                            this.logNegocio.realizaProposta(cod, username);
+                        }
+                        else{
+                            System.out.println("Codigo invalido");
+                        }
                     }
                     this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
                     break;
@@ -535,7 +555,12 @@ public class TrazAquiApp{
                 case 1:
                     System.out.println("Insira o código da encomenda que deseja selecionar: ");
                     String cod = scin.nextLine();
-                    menuDePropostasTransporte(cod,username);
+                    if(this.logNegocio.contemEncomenda(this.logNegocio.listOfEncomendasPorEntregar(username),username,cod)) {
+                        menuDePropostasTransporte(cod, username);
+                    }
+                    else{
+                        System.out.println("Codigo invalido");
+                    }
                     break;
                 case 2:
                     //ordenar por tempo de pedido
@@ -568,7 +593,12 @@ public class TrazAquiApp{
                 case 1:
                     System.out.println("Insira o username da empresa: ");
                     String nome = scin.nextLine();
-                    this.logNegocio.realizaEncomenda(cod,nome);
+                    if(this.logNegocio.contemProposta(this.logNegocio.listOfEncomendasPorEntregar(username),username,cod,nome)) {
+                        this.logNegocio.realizaEncomenda(cod, nome);
+                    }
+                    else{
+                        System.out.println("Codigo invalido");
+                    }
                     this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
                     break;
                 case 2:
@@ -596,13 +626,17 @@ public class TrazAquiApp{
                     //aceitar encomendas
                     System.out.println("Insira o código da encomenda que deseja aceitar: ");
                     String cod = scin.nextLine();
-                    if(this.logNegocio.temFila(username)){
-                        this.logNegocio.adicionaEncFila(username,cod);
+                    if(this.logNegocio.contemEncomenda(this.logNegocio.listOfEncomendasPorAceitar(username),username,cod)) {
+                        if (this.logNegocio.temFila(username)) {
+                            this.logNegocio.adicionaEncFila(username, cod);
+                        } else {
+                            this.logNegocio.adicionaEncLoja(username, cod);
+                        }
+                        this.logNegocio.adicionaAceites(cod);
                     }
                     else{
-                        this.logNegocio.adicionaEncLoja(username,cod);
+                        System.out.println("Codigo invalido");
                     }
-                    this.logNegocio.adicionaAceites(cod);
                     this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
                     break;
                 case 2:
@@ -669,7 +703,12 @@ public class TrazAquiApp{
                     //detalhes
                     System.out.println("Insira o código da encomenda: ");
                     String cod = scin.nextLine();
-                    detalhesEncomenda(username,cod);
+                    if(this.logNegocio.contemEncomenda(this.logNegocio.listOfEncomendasHistorico(username),username,cod)) {
+                        detalhesEncomenda(username, cod);
+                    }
+                    else{
+                        System.out.println("Codigo errado");
+                    }
                     break;
                 case 2:
                     //ordenar por data

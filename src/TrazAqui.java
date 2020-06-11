@@ -176,12 +176,15 @@ public class TrazAqui implements Serializable{
         this.encomendas.get(codEnc).setTransportador(usernameV);
         ((Loja) this.users.get(this.encomendas.get(codEnc).getLoja())).removeEncomenda(codEnc);
         ((Transportador) this.users.get(usernameV)).addEncomenda(this.encomendas.get(codEnc).clone());
+        this.aceites.remove(this.encomendas.get(codEnc).getCodigo());
         this.encomendas.get(codEnc).setPropostas(new ArrayList<>());
     }
 
     public void realizaProposta(String cod, String username){
-        this.encomendas.get(cod).adicionaProposta(this.users.get(username).getUsername());
-        System.out.println(this.encomendas.get(cod));
+        if(!(this.encomendas.get(cod).getPropostas().contains(username))){
+            this.encomendas.get(cod).adicionaProposta(this.users.get(username).getUsername());
+        }
+        //System.out.println(this.encomendas.get(cod));
     }
 
     public void confirmarEntEncomenda(String cod, String username){
@@ -389,9 +392,10 @@ public class TrazAqui implements Serializable{
 
     public List<Encomenda> listOfEncomendasFila(String username){
         List<Encomenda> l = new ArrayList<>();
-        LojaComFila lf = (LojaComFila) this.users.get(username).clone();
+        LojaComFila lf = (LojaComFila) this.users.get(username);
         for(Encomenda e: this.getEncomendas().values()){
-            if(lf.getFila().contains(e.getCodigo()) && e.getUtilizador().equals(username)){
+            //System.out.println(lf.getFila().contains(e));
+            if(lf.getFila().contains(e) && e.getLoja().equals(username)){
                 l.add(e.clone());
             }
         }
@@ -400,9 +404,9 @@ public class TrazAqui implements Serializable{
 
     public List<Encomenda> listOfEncomendasProntas(String username){
         List<Encomenda> l = new ArrayList<>();
-        Loja lf = (Loja) this.users.get(username).clone();
+        Loja lf = (Loja) this.users.get(username);
         for(Encomenda e: this.getEncomendas().values()){
-            if(lf.getEncomendas().containsKey(e.getCodigo()) && e.getUtilizador().equals(username)){
+            if(lf.getEncomendas().containsKey(e.getCodigo()) && e.getLoja().equals(username)){
                 l.add(e.clone());
             }
         }
@@ -421,7 +425,7 @@ public class TrazAqui implements Serializable{
         List<Encomenda> l = new ArrayList<>();
         Transportador lf = (Transportador) this.users.get(username).clone();
         for(Encomenda e: this.getEncomendas().values()){
-            if(lf.getEncomendas().containsKey(e.getCodigo()) && e.getUtilizador().equals(username)){
+            if(lf.getEncomendas().containsKey(e.getCodigo()) && e.getTransportador().equals(username)){
                 l.add(e.clone());
             }
         }
@@ -433,7 +437,7 @@ public class TrazAqui implements Serializable{
     }
 
     public boolean contemProposta(List<Encomenda> lst,String username, String cod, String empresa){
-        return lst.stream().filter(o->o.equals(empresa)).findFirst().isPresent();
+        return lst.stream().filter(o->o.getPropostas().contains(empresa)).findFirst().isPresent();
     }
 
     public String getEncomendaString(String num) throws EncomendaInexistenteException {
@@ -681,7 +685,7 @@ public class TrazAqui implements Serializable{
         Empresa em = (Empresa) this.users.get(username);
         double saldo = 0.0;
         for(Encomenda e: this.encomendas.values()){
-            if(e.getHoraF().isAfter(LocalDateTime.now().minusDays(1)) && e.getUtilizador().equals(username)){
+            if(e.getHoraF().isAfter(LocalDateTime.now().minusDays(1)) && e.getTransportador().equals(username)){
                 saldo = saldo + custoViagem(e.getCodigo(),em);
             }
         }
@@ -702,7 +706,7 @@ public class TrazAqui implements Serializable{
         Empresa em = (Empresa) this.users.get(username);
         double saldo = 0.0;
         for(Encomenda e: this.encomendas.values()){
-            if(e.getHoraF().isAfter(LocalDateTime.now().minusWeeks(1)) && e.getUtilizador().equals(username)){
+            if(e.getHoraF().isAfter(LocalDateTime.now().minusWeeks(1)) && e.getTransportador().equals(username)){
                 saldo = saldo + custoViagem(e.getCodigo(),em);
             }
         }
@@ -723,7 +727,7 @@ public class TrazAqui implements Serializable{
         Empresa em = (Empresa) this.users.get(username);
         double saldo = 0.0;
         for(Encomenda e: this.encomendas.values()){
-            if(e.getHoraF().isAfter(LocalDateTime.now().minusMonths(1)) && e.getUtilizador().equals(username)){
+            if(e.getHoraF().isAfter(LocalDateTime.now().minusMonths(1)) && e.getTransportador().equals(username)){
                 saldo = saldo + custoViagem(e.getCodigo(),em);
             }
         }
@@ -734,7 +738,7 @@ public class TrazAqui implements Serializable{
         Empresa em = (Empresa) this.users.get(username);
         double saldo = 0.0;
         for(Encomenda e: this.encomendas.values()){
-            if(e.getUtilizador().equals(username)){
+            if(e.getTransportador().equals(username)){
                 saldo = saldo + custoViagem(e.getCodigo(),em);
             }
         }
@@ -786,10 +790,10 @@ public class TrazAqui implements Serializable{
                 Localizacao lu = this.users.get(e.getUtilizador()).getPosicao();
                 Localizacao ll = this.users.get(e.getLoja()).getPosicao();
                 if(e.getTransportador().equals(o1)) {
-                    distancia1 = distancia1 + ((Transportador) (this.users.get(le1))).distanciaA(ll) + ((Transportador) (this.users.get(le1))).distanciaA(lu);
+                    distancia1 = distancia1 + ((Transportador) (this.users.get(o1))).distanciaA(ll) + ((Transportador) (this.users.get(o1))).distanciaA(lu);
                 }
                 if(e.getTransportador().equals(o2)) {
-                    distancia2 = distancia2+ ((Transportador) (this.users.get(le2))).distanciaA(ll) + ((Transportador) (this.users.get(le2))).distanciaA(lu);
+                    distancia2 = distancia2+ ((Transportador) (this.users.get(o2))).distanciaA(ll) + ((Transportador) (this.users.get(o2))).distanciaA(lu);
                 }
             }
             return (int)(distancia2-distancia1);
@@ -824,10 +828,10 @@ public class TrazAqui implements Serializable{
                 Localizacao lu = this.users.get(e.getUtilizador()).getPosicao();
                 Localizacao ll = this.users.get(e.getLoja()).getPosicao();
                 if(e.getTransportador().equals(o1)) {
-                    distancia1 = distancia1 + ((Transportador) (this.users.get(le1))).distanciaA(ll) + ((Transportador) (this.users.get(le1))).distanciaA(lu);
+                    distancia1 = distancia1 + ((Empresa) (this.users.get(o1))).distanciaA(ll) + ((Empresa) (this.users.get(o1))).distanciaA(lu);
                 }
                 if(e.getTransportador().equals(o2)) {
-                    distancia2 = distancia2+ ((Transportador) (this.users.get(le2))).distanciaA(ll) + ((Transportador) (this.users.get(le2))).distanciaA(lu);
+                    distancia2 = distancia2 + ((Empresa) (this.users.get(o2))).distanciaA(ll) + ((Empresa) (this.users.get(o2))).distanciaA(lu);
                 }
             }
             return (int)(distancia2-distancia1);

@@ -110,7 +110,7 @@ public class TrazAquiApp{
 
     private void run(){
         this.logNegocio.verificaAceites();
-        //System.out.println(this.logNegocio.toString());
+        System.out.println(this.logNegocio.toString());
         do {
             init.executa();
             switch (init.getOpcao()) {
@@ -224,7 +224,7 @@ public class TrazAquiApp{
             this.logNegocio.adicionaUser(TrazAqui.criaEmpresa(username,nome,password,TrazAqui.criaLocalizacao(latitude,longitude),raio,disponivel,medica,
                                                                 new HashMap<>(),new HashMap<>(),preco_km,preco_kg,nif));
             this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
-            menuDeUtil(username);
+            menuDeTransportador(username);
         }
         catch (UserInexistenteException e) {
             System.out.println(e.getMessage());
@@ -615,7 +615,7 @@ public class TrazAquiApp{
     public void menuDeLoja(String username) throws UserInexistenteException, EncomendaInexistenteException, IOException {
         Scanner scin = new Scanner(System.in);
         do {
-            StringBuilder encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
+            StringBuilder encomendas = new StringBuilder("*** Encomendas por Aceitar ***\n");
             for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasPorAceitar(username))){
                 encomendas.append("\n").append(ln).append("\n").append("*** ***").append("\n");
             }
@@ -657,7 +657,7 @@ public class TrazAquiApp{
                     break;
                 case 3:
                     //encomendas por entregar
-                    StringBuilder encomendas2 = new StringBuilder("*** Encomendas por Entregar ***\n");
+                    StringBuilder encomendas2 = new StringBuilder("*** Encomendas prontas ***\n");
                     for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasProntas(username))){
                         encomendas2.append("\n").append(ln).append("\n").append("*** ***").append("\n");
                     }
@@ -666,7 +666,7 @@ public class TrazAquiApp{
                 case 4:
                     //encomendas em fila de espera
                     if(this.logNegocio.temFila(username)){
-                        StringBuilder encomendas3 = new StringBuilder("*** Encomendas por Entregar ***\n");
+                        StringBuilder encomendas3 = new StringBuilder("*** Encomendas em fila ***\n");
                         for (String ln : this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasFila(username))) {
                             encomendas3.append("\n").append(ln).append("\n").append("*** ***").append("\n");
                         }
@@ -689,7 +689,7 @@ public class TrazAquiApp{
         } while (menuLoja.getOpcao()!=0);
     }
 
-    public void historicoEncomendas(String username) throws EncomendaInexistenteException, UserInexistenteException {
+    public void historicoEncomendas(String username) throws EncomendaInexistenteException, UserInexistenteException, IOException {
         Scanner scin = new Scanner(System.in);
         StringBuilder encomendas = new StringBuilder("*** Encomendas por Entregar ***\n");
         for(String ln: this.logNegocio.listOfEncomendasInfo(this.logNegocio.listOfEncomendasHistorico(username))){
@@ -773,7 +773,7 @@ public class TrazAquiApp{
         } while (menuHistoricoEncomendas.getOpcao()!=0);
     }
 
-    public void detalhesEncomenda(String username, String codigo) throws EncomendaInexistenteException, UserInexistenteException {
+    public void detalhesEncomenda(String username, String codigo) throws EncomendaInexistenteException, UserInexistenteException, IOException {
         Scanner scin = new Scanner(System.in);
         do {
             System.out.println(this.logNegocio.getEncomendaString(codigo));
@@ -788,6 +788,7 @@ public class TrazAquiApp{
                     } else {
                         System.out.println("Numero invalido");
                     }
+                    this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
                     break;
                 case 2:
                     //classificar loja
@@ -799,6 +800,7 @@ public class TrazAquiApp{
                     else{
                     System.out.println("Numero invalido");
                     }
+                    this.logNegocio.guardaEstado("/home/simao/Desktop/Universidade/POO/ProjetoPOO1920/ProjetoPOO1920/estado.obj");
                     break;
             }
             //System.out.println(this.logNegocio.toString());
